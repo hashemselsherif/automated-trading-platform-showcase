@@ -1,15 +1,8 @@
 # Automated Trading Platform Showcase
 
-This is a small, hiring-friendly snapshot of a larger personal project: an automated trading and monitoring platform built to test ideas, manage risk, and monitor live activity in real time.
+This repository is a concise showcase of a live automated financial trading platform on Solana. The system runs multiple quantitative strategies in parallel, generates trade signals in real time, applies layered risk controls, executes trades, and provides dashboards and alerts for monitoring and control.
 
-## Resume Bullets
-
-- Built an automated trading platform that combined strategy execution, live monitoring, performance tracking, and operational controls in one system.
-- Added risk controls including capital sizing, stop-loss rules, position limits, and pause/close safeguards.
-- Created web, terminal, and mobile-friendly monitoring tools with real-time updates, alerts, and control actions.
-- Developed a testing and backtesting workflow to compare ideas, validate changes, and improve reliability before live use.
-
-## What The System Included
+## What The System Includes
 
 - Multiple trading strategies and configurable execution logic
 - Risk management rules for sizing, exits, and exposure control
@@ -19,19 +12,19 @@ This is a small, hiring-friendly snapshot of a larger personal project: an autom
 
 ## Quick Snapshot
 
-- Purpose: automate research, execution, monitoring, and control in one place
-- Build: Node.js backend, live dashboards, local data storage, real-time event streaming
-- Operations: web dashboard, terminal dashboard, and alert-based monitoring
+- Purpose: automate strategy execution, risk management, monitoring, and operational control in one place
+- Stack: Node.js backend, Solana-based trading workflows, local data storage, and real-time event streaming
+- Operations: web dashboard, terminal dashboard, Telegram-style alerting, and live control actions
 - Reliability: 60+ automated tests plus a large set of targeted validation scripts
 
-## Visual Summary From The Original Project Diagrams
+## Architecture Summary
 
-The original project included a diagram pack that mapped the system end to end. In simple terms, the visuals showed four main ideas:
+The original project includes a diagram pack that maps the trading workflow end to end. In simple terms, the visuals show four main ideas:
 
-- The platform followed a full decision chain from market data to signal generation, opportunity ranking, position sizing, leverage selection, trade validation, execution, and performance tracking.
+- The platform follows a full decision chain from market data to signal generation, opportunity ranking, position sizing, leverage selection, trade validation, execution, and performance tracking.
 - Entry decisions were not one-step triggers. They were gated through warm-up checks, trend and momentum filters, breakout confirmation, volume checks, cooldowns, and position-aware logic.
-- Risk management was layered. The system checked portfolio limits, individual position limits, slippage, market impact, funding conditions, and approval rules before allowing execution.
-- The platform was built to run across multiple markets in parallel while ranking the best opportunities, applying exit priorities, and supporting both fixed-capital and compounding capital modes.
+- Risk management is layered. The system checks portfolio limits, individual position limits, slippage, market impact, funding conditions, and approval rules before allowing execution.
+- The platform runs across multiple markets in parallel while ranking the best opportunities, applying exit priorities, and supporting both fixed-capital and compounding capital modes.
 
 ## System Map
 
@@ -51,4 +44,4 @@ flowchart LR
 
 ## How To Review This Project
 
-If you are scanning quickly, the main takeaway is that this project was not just a trading script. It was a full operating system around automated decision-making: strategy logic, ranked selection, layered risk controls, execution checks, monitoring, reporting, and operational safety tools.
+If you are scanning quickly, the main takeaway is that this is not just a trading script. It is a full operating system around automated financial decision-making: strategy logic, ranked selection, layered risk controls, execution checks, monitoring, reporting, and operational safety tools.
