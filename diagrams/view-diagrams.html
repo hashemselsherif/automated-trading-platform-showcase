@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automated Trading System Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 320px;
+      background: #161b22;
+      border-right: 1px solid #30363d;
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar h1 {
+      color: #58a6ff;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar p {
+      color: #8b949e;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #c9d1d9;
+      text-decoration: none;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+    }
+
+    .sidebar a:hover {
+      background: #21262d;
+      color: #58a6ff;
+    }
+
+    main {
+      flex: 1;
+      padding: 28px;
+    }
+
+    section {
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      background: #0d1117;
+    }
+
+    h2 {
+      color: #58a6ff;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    section p {
+      color: #8b949e;
+      margin-bottom: 18px;
+    }
+
+    .diagram {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h1>System Diagrams</h1>
+      <p>Architecture, risk, validation, routing, and multi-market execution.</p>
+      <a href="#flow">1. End-to-End Flow</a>
+      <a href="#loop">2. Main Trading Loop</a>
+      <a href="#signals">3. Strategy Signals</a>
+      <a href="#allocator">4. Market Ranking</a>
+      <a href="#risk">5. Risk Hierarchy</a>
+      <a href="#validation">6. Validation Pipeline</a>
+      <a href="#routing">7. Venue Routing</a>
+      <a href="#markets">8. Multi-Market Execution</a>
+    </aside>
+    <main>
+      <section id="flow">
+        <h2>1. End-to-End Trading Flow</h2>
+        <p>From data ingestion to signal generation, risk checks, execution, and live monitoring.</p>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart LR
+  A[Market Data] --> B[Strategy Signals]
+  B --> C{Has Positions}
+  C -->|Yes| D[Check Exits]
+  C -->|No| E[Check Entries]
+  D -->|Should Exit| F[Close Position]
+  D -->|Hold| G[Update Tracking]
+  E -->|Should Enter| H[Market Allocator]
+  H --> I[Position Sizing]
+  I --> J[Leverage Selection]
+  J --> K[Validation]
+  K -->|Pass| L[Execute]
+  K -->|Fail| G
+  F --> M[Update PnL]
+  L --> M
+  M --> G
+  G --> A
+          </div>
+        </div>
+      </section>
+
+      <section id="loop">
+        <h2>2. Main Trading Loop</h2>
+        <p>The loop refreshes data, evaluates signals, selects trades, and executes approved candidates.</p>
+        <div class="diagram">
+          <div class="mermaid">
+sequenceDiagram
+  participant Bot as Trading Loop
+  participant Data as Market Data
+  participant Strat as Strategies
+  participant Alloc as Allocator
+  participant Risk as Risk Layer
+  participant Exec as Execution
+
+  loop Every cycle
+    Bot->>Data: Fetch prices and indicators
+    Data-->>Bot: Updated market state
+    Bot->>Strat: Refresh strategy state
+    Strat-->>Bot: Signals by market
+    Bot->>Bot: Check active positions
+    Bot->>Alloc: Score opportunities
+    Alloc-->>Bot: Ranked candidates
+    loop For each selected trade
+      Bot->>Risk: Size and validate
+      Risk-->>Bot: Size or reject
+      alt Approved
+        Bot->>Exec: Open position
+        Exec-->>Bot: Position opened
+      else Rejected
+        Bot->>Bot: Skip trade
+      end
+    end
+  end
+          </div>
+        </div>
+      </section>
+
+      <section id="signals">
+        <h2>3. Strategy Signal Generation</h2>
+        <p>Signal logic is multi-factor, position-aware, and gated by readiness, trend, volatility, and cooldown context.</p>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart TB
+  Start([New Bar]) --> Update[Update EMA RSI ADX ATR Donchian VWAP]
+  Update --> Ready{Warm Up Complete}
+  Ready -->|No| Hold1[Return HOLD]
+  Ready -->|Yes| HasPos{Has Position}
+  HasPos -->|Yes| CheckExit{Should Exit}
+  CheckExit -->|Yes| Exit[Return CLOSE]
+  CheckExit -->|No| CheckPyramid{Can Add}
+  CheckPyramid -->|Yes| Pyramid[Return PYRAMID]
+  CheckPyramid -->|No| Hold2[Return HOLD]
+  HasPos -->|No| Gates[Evaluate Entry Gates]
+  Gates --> LongGate{Long Gates Pass}
+  Gates --> ShortGate{Short Gates Pass}
+  LongGate --> LongFactors[Trend Momentum Volume Volatility Cooldown HTF]
+  ShortGate --> ShortFactors[Trend Momentum Volume Volatility Cooldown HTF]
+  LongFactors --> Edge{Edge Detected}
+  ShortFactors --> Edge
+  Edge -->|Long| OpenLong[Return OPEN LONG]
+  Edge -->|Short| OpenShort[Return OPEN SHORT]
+  Edge -->|None| Hold3[Return HOLD]
+          </div>
+        </div>
+      </section>
+
+      <section id="allocator">
+        <h2>4. Market Ranking</h2>
+        <p>Signals are scored, filtered, ranked, and limited by portfolio and per-market constraints.</p>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart TB
+  A[All Market Signals] --> B[Score Each Opportunity]
+  B --> C[Confidence Return Volatility Performance]
+  C --> D[Apply Diversification Correlation Cooldown Bias]
+  D --> E{Score Above Threshold}
+  E -->|No| Drop[Discard]
+  E -->|Yes| Keep[Keep Candidate]
+  Keep --> F[Sort By Score]
+  F --> G[Select Best N]
+  G --> H{Portfolio Limit OK}
+  H -->|No| Skip[Skip]
+  H -->|Yes| I{Per Market Limit OK}
+  I -->|No| Penalize[Apply Penalty Or Skip]
+  I -->|Yes| Final[Final Selection]
+  Penalize --> Final
+          </div>
+        </div>
+      </section>
+
+      <section id="risk">
+        <h2>5. Risk Hierarchy</h2>
+        <p>Portfolio limits, position limits, and validation checks all gate execution.</p>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart TB
+  Trade[Trade Request] --> L1[Portfolio Risk Checks]
+  L1 --> A[Exposure Limit]
+  L1 --> B[Total Leverage]
+  L1 --> C[Position Count]
+  A --> D{All Pass}
+  B --> D
+  C --> D
+  D -->|No| Reject1[Reject Trade]
+  D -->|Yes| L2[Position Risk Checks]
+  L2 --> E[Position Size Bounds]
+  L2 --> F[Stop Distance]
+  L2 --> G[Leverage Bounds]
+  E --> H{All Pass}
+  F --> H
+  G --> H
+  H -->|No| Reject2[Reject Trade]
+  H -->|Yes| L3[Validation Checks]
+  L3 --> I[Slippage]
+  L3 --> J[Market Impact]
+  L3 --> K[Funding]
+  I --> L{All Pass}
+  J --> L
+  K --> L
+  L -->|No| Reject3[Reject Trade]
+  L -->|Yes| Execute[Allow Execution]
+          </div>
+        </div>
+      </section>
+
+      <section id="validation">
+        <h2>6. Validation Pipeline</h2>
+        <p>Execution requires slippage, impact, funding, and approval checks to pass first.</p>
+        <div class="diagram">
+          <div class="mermaid">
+sequenceDiagram
+  participant Bot
+  participant Slip as Slippage Check
+  participant Impact as Impact Check
+  participant Funding as Funding Check
+  participant Gate as Execution Gate
+  participant Exec as Venue Executor
+
+  Bot->>Slip: Validate slippage
+  alt Slippage too high
+    Slip-->>Bot: Fail
+  else Slippage ok
+    Slip-->>Bot: Pass
+    Bot->>Impact: Estimate market impact
+    alt Impact too high
+      Impact-->>Bot: Fail
+    else Impact ok
+      Impact-->>Bot: Pass
+      Bot->>Funding: Check funding conditions
+      Funding-->>Bot: Pass or warn
+      Bot->>Gate: Request execution approval
+      Gate-->>Bot: Approved or rejected
+      alt Approved
+        Bot->>Exec: Execute trade
+        Exec-->>Bot: Position opened
+      else Rejected
+        Gate-->>Bot: Skip trade
+      end
+    end
+  end
+          </div>
+        </div>
+      </section>
+
+      <section id="routing">
+        <h2>7. Venue Routing</h2>
+        <p>Execution routing changes by market, venue state, and guardrail mode.</p>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart LR
+  A[Trade Request] --> B[Resolve Market]
+  B --> C{Primary Or Alt Venue}
+  C -->|Primary| D[Primary Venue Client]
+  C -->|Alt| E[Alt Venue Client]
+  E --> F{Live State Gate}
+  F -->|Shadow Only| G[Record Shadow Trade]
+  F -->|Limited Live| H[Apply Guardrails]
+  F -->|Full Live| I[Submit Order]
+  D --> J[Track Position Venue]
+  H --> I
+  I --> J
+  J --> K[Update Stats And Logs]
+          </div>
+        </div>
+      </section>
+
+      <section id="markets">
+        <h2>8. Multi-Market Execution</h2>
+        <p>Signals across markets are evaluated in parallel and only the best candidates proceed.</p>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart TB
+  A[Cycle Starts] --> B[Fetch Prices For All Markets]
+  B --> C[Update Per Market Strategy State]
+  C --> D[Check Position Exits]
+  D --> E[Collect Signals]
+  E --> F[Rank Opportunities]
+  F --> G[Select Best Trades]
+  G --> H1[Trade 1]
+  G --> H2[Trade 2]
+  G --> H3[Trade 3]
+  H1 --> I1[Size And Validate]
+  H2 --> I2[Size And Validate]
+  H3 --> I3[Size And Validate]
+  I1 --> J[Execute]
+  I2 --> J
+  I3 --> J
+  J --> K[Update Tracking]
+  K --> L[Wait Until Next Cycle]
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "default",
+      securityLevel: "loose",
+      flowchart: { htmlLabels: true, curve: "basis" }
+    });
+  </script>
+</body>
+</html>

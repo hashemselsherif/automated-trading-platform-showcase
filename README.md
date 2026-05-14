@@ -1,14 +1,14 @@
 # Automated Trading Platform Showcase
 
-This repository is a summarized showcase of a live automated financial trading platform on Solana. The system runs multiple quantitative strategies in parallel, generates trade signals in real time, applies layered risk controls, executes trades, and provides dashboards and alerts for monitoring and control.
+A compact technical snapshot of a live automated financial trading system on Solana. The platform runs multiple quantitative strategies in parallel, generates real-time trade signals, ranks market opportunities, applies layered risk controls, executes trades, and streams operating status to dashboards and alerts.
 
 ## What The System Includes
 
-- Multiple trading strategies and configurable execution logic
-- Risk management rules for sizing, exits, and exposure control
-- Real-time dashboards, alerts, and operator controls
-- Trade journaling, performance tracking, and status reporting
-- Backtesting, diagnostics, and validation tooling
+- Multi-strategy signal generation across momentum, breakout, mean-reversion, and event-driven styles
+- Opportunity ranking and market selection across multiple assets in the same trading loop
+- Strategy-aware risk sizing, stop logic, leverage controls, and portfolio-level exposure checks
+- Pre-trade validation for slippage, market impact, funding conditions, and execution-mode gating
+- Venue-aware execution routing, trade tracking, live dashboards, alerts, and backtesting workflows
 
 ## Quick Snapshot
 
@@ -17,31 +17,33 @@ This repository is a summarized showcase of a live automated financial trading p
 - Operations: web dashboard, terminal dashboard, Telegram-style alerting, and live control actions
 - Reliability: 60+ automated tests plus a large set of targeted validation scripts
 
-## Architecture Summary
-
-The original project includes a diagram pack that maps the trading workflow end to end. In simple terms, the visuals show four main ideas:
-
-- The platform follows a full decision chain from market data to signal generation, opportunity ranking, position sizing, leverage selection, trade validation, execution, and performance tracking.
-- Entry decisions were not one-step triggers. They were gated through warm-up checks, trend and momentum filters, breakout confirmation, volume checks, cooldowns, and position-aware logic.
-- Risk management is layered. The system checks portfolio limits, individual position limits, slippage, market impact, funding conditions, and approval rules before allowing execution.
-- The platform runs across multiple markets in parallel while ranking the best opportunities, applying exit priorities, and supporting both fixed-capital and compounding capital modes.
-
-## System Map
+## High-Level Flow
 
 ```mermaid
 flowchart LR
-  A[Market Data] --> B[Signal Generation]
+  A[Market Data] --> B[Per Strategy Signal Generation]
   B --> C[Opportunity Ranking]
   C --> D[Position Sizing]
   D --> E[Leverage Selection]
   E --> F[Pre Trade Validation]
-  F --> G[Execution]
-  G --> H[Performance Tracking]
+  F --> G[Execution Routing]
+  G --> H[Position Tracking]
   H --> I[Dashboards and Alerts]
   I --> J[Operator Controls]
   J --> F
 ```
 
-## How To Review This Project
+## Repository Guide
 
-If you are scanning quickly, the main takeaway is that this is not just a trading script. It is a full operating system around automated financial decision-making: strategy logic, ranked selection, layered risk controls, execution checks, monitoring, reporting, and operational safety tools.
+- [diagrams/DIAGRAMS.md](./diagrams/DIAGRAMS.md) renders the core trading, validation, and risk workflows directly on GitHub.
+- [diagrams/view-diagrams.html](./diagrams/view-diagrams.html) provides a browser-friendly diagram viewer with the same architecture pack plus execution-routing views.
+- [samples/strategy-signal-engine.js](./samples/strategy-signal-engine.js) shows representative multi-factor strategy gating and signal generation logic.
+- [samples/strategy-aware-risk.js](./samples/strategy-aware-risk.js) shows strategy-specific risk configuration and equal-risk position sizing.
+- [samples/venue-aware-execution.js](./samples/venue-aware-execution.js) shows execution routing, retries, and venue-specific gating.
+
+## Implementation Themes
+
+- Signal generation is multi-factor and position-aware rather than trigger-only. Entry logic combines trend, momentum, volatility, volume, cooldown, and higher-timeframe context.
+- Risk management is strategy-aware. Different strategies carry different stop, take-profit, holding-period, and sizing rules.
+- Execution is not a single client call. The platform routes by market and venue state, applies retries, and blocks trades when validation or collateral conditions fail.
+- Operations are first-class. The trading engine exposes live monitoring, manual control actions, and backtesting tools alongside production logic.
