@@ -1,6 +1,6 @@
 # Automated Trading Platform Showcase
 
-This repository is a concise showcase of a live automated financial trading platform on Solana. The system runs multiple quantitative strategies in parallel, generates trade signals in real time, applies layered risk controls, executes trades, and provides dashboards and alerts for monitoring and control.
+This repository is a summarized showcase of a live automated financial trading platform on Solana. The system runs multiple quantitative strategies in parallel, generates trade signals in real time, applies layered risk controls, executes trades, and provides dashboards and alerts for monitoring and control.
 
 ## What The System Includes
 
