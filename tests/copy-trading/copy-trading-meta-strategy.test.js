@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const CopyTradingMetaStrategy = require("../../copy-trading-meta-strategy");
+const CopyTradingMetaStrategy = require("../../src/strategies/copy-trading-meta-strategy");
 
 test("meta strategy opens when consensus and leader summary both qualify", () => {
   const consensusProvider = () => ({

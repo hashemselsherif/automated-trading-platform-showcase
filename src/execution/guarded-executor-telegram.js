@@ -7,7 +7,7 @@ const readline = require('readline');
 // Try to use config, fallback to process.env for standalone usage
 let config;
 try {
-  config = require('./config');
+  config = require('../../config');
 } catch (e) {
   config = null;
 }

@@ -38,7 +38,7 @@ const crypto = require("crypto");
 // NOTE: env already loaded above via ENV_FILE
 
 // Import the Ichimoku Cloud Breakout Strategy
-const IchimokuCloudBreakoutStrategy = require("../../ichimoku-cloud-breakout-strategy");
+const IchimokuCloudBreakoutStrategy = require("../../src/strategies/ichimoku-cloud-breakout-strategy");
 
 // Import shared utilities from main backtest
 const db = require("../../db");

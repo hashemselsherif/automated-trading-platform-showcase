@@ -81,7 +81,7 @@ const path = require("path");
 const crypto = require("crypto");
 
 // Import the Predicta Strategy
-const PredictaStrategy = require("../../predicta-strategy");
+const PredictaStrategy = require("../../src/strategies/predicta-strategy");
 
 // Import shared utilities
 const db = require("../../db");

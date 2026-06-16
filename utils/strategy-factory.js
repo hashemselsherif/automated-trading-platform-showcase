@@ -17,14 +17,14 @@
  *   // strategies = [{ type: 'momentum', strategy }, { type: 'rsi-reversion', strategy }]
  */
 
-const EnhancedMomentumStrategy = require("../enhanced-momentum-strategy");
-const ScalpingStrategy = require("../scalping-strategy");
-const RsiMeanReversionStrategy = require("../enhanced-momentum-rsi-strategy");
-const BtcBreakoutStrategy = require("../btc-breakout-strategy");
-const IchimokuCloudBreakoutStrategy = require("../ichimoku-cloud-breakout-strategy");
-const CopyTradingStrategy = require("../copy-trading-strategy");
-const CopyTradingMetaStrategy = require("../copy-trading-meta-strategy");
-const CopyTradingEventStrategy = require("../copy-trading-event-strategy");
+const EnhancedMomentumStrategy = require("../src/strategies/enhanced-momentum-strategy");
+const ScalpingStrategy = require("../src/strategies/scalping-strategy");
+const RsiMeanReversionStrategy = require("../src/strategies/enhanced-momentum-rsi-strategy");
+const BtcBreakoutStrategy = require("../src/strategies/btc-breakout-strategy");
+const IchimokuCloudBreakoutStrategy = require("../src/strategies/ichimoku-cloud-breakout-strategy");
+const CopyTradingStrategy = require("../src/strategies/copy-trading-strategy");
+const CopyTradingMetaStrategy = require("../src/strategies/copy-trading-meta-strategy");
+const CopyTradingEventStrategy = require("../src/strategies/copy-trading-event-strategy");
 const { getCopyTradingConsensusProvider } = require("./copy-trading-consensus-provider");
 const dotenv = require("dotenv");
 const fs = require("fs");

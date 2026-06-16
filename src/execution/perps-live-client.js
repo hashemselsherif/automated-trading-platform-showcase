@@ -10,7 +10,7 @@ require("dotenv").config();
 
 const fs = require("fs");
 const path = require("path");
-const config = require("./config");
+const config = require("../../config");
 const {
   Keypair,
   PublicKey,
@@ -27,7 +27,7 @@ const {
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
 } = require("@solana/spl-token");
-const RPCManager = require("./utils/rpc-manager");
+const RPCManager = require("../../utils/rpc-manager");
 const axios = require("axios");
 const {
   PERPS_PROGRAM,
@@ -340,7 +340,7 @@ function loadWallet() {
   if (!fs.existsSync(p)) throw new Error(`❌ Wallet not found at ${p}`);
   
   // Check if wallet is encrypted
-  const walletEncryption = require('./utils/wallet-encryption');
+  const walletEncryption = require('../../utils/wallet-encryption');
   const walletPassword = process.env.WALLET_PASSWORD;
   
   if (walletEncryption.isEncrypted(p)) {
@@ -2126,7 +2126,7 @@ class JupiterPerpsLive {
   }
 
   async _sendAndConfirm(txLike, options = {}) {
-    const { retryTransaction } = require("./utils/transaction-retry");
+    const { retryTransaction } = require("../../utils/transaction-retry");
     
     // RACE CONDITION FIX: Capture priority fee at call time, don't mutate this.priorityFee
     // This prevents concurrent operations from seeing inconsistent priority fee values

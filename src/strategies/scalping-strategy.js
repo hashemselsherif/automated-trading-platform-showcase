@@ -19,8 +19,8 @@
  * - getRecommendedPositionSize(price, side, capital)
  */
 
-const SmartLevelsTracker = require('./utils/smart-levels');
-const marketDataProvider = require('./utils/market-data');
+const SmartLevelsTracker = require('../../utils/smart-levels');
+const marketDataProvider = require('../../utils/market-data');
 
 // Simple indicator calculations
 function ema(values, period) {

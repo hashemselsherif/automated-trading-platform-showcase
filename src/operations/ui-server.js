@@ -13,11 +13,11 @@ try {
 } catch (e) {
   // Optional dependency; if missing we skip compression
 }
-const config = require('./config');
+const config = require('../../config');
 const { PublicKey } = require('@solana/web3.js');
-const JupiterPerpsLive = require('./perps-live-client');
-const { MARKET_REGISTRY } = require('./perps-live-client');
-const { getManualTradePasswordSync, getManualTradePassword } = require('./utils/secure-password-loader');
+const JupiterPerpsLive = require('../execution/perps-live-client');
+const { MARKET_REGISTRY } = require('../execution/perps-live-client');
+const { getManualTradePasswordSync, getManualTradePassword } = require('../../utils/secure-password-loader');
 
 let perpsClientPromise = null;
 let perpsMarketCache = null;
@@ -322,7 +322,7 @@ async function fetchWalletPositions(walletPublicKey) {
 // Security utilities (optional - may not exist)
 let authenticateApiKey, rateLimiter, validateWebSocketMessage, validateTransactionParams, logApiAccess, logSecurityEvent, logTransaction;
 try {
-  const auth = require('./utils/auth');
+  const auth = require('../../utils/auth');
   authenticateApiKey = auth.authenticateApiKey;
   rateLimiter = auth.rateLimiter;
 } catch (e) {
@@ -330,7 +330,7 @@ try {
 }
 
 try {
-  const validator = require('./utils/input-validator');
+  const validator = require('../../utils/input-validator');
   validateWebSocketMessage = validator.validateWebSocketMessage;
   validateTransactionParams = validator.validateTransactionParams;
 } catch (e) {
@@ -338,7 +338,7 @@ try {
 }
 
 try {
-  const logger = require('./utils/audit-logger');
+  const logger = require('../../utils/audit-logger');
   logApiAccess = logger.logApiAccess;
   logSecurityEvent = logger.logSecurityEvent;
   logTransaction = logger.logTransaction;
@@ -771,7 +771,7 @@ app.get('/api/perps/positions/:walletAddress', optionalAuth, async (req, res) =>
 });
 
 // Manual trade endpoints (wallet-based, separate from bot)
-const txBuilder = require('./utils/perps-transaction-builder');
+const txBuilder = require('../../utils/perps-transaction-builder');
 
 /**
  * POST /api/perps/manual/open
@@ -1870,7 +1870,7 @@ app.get('/api/pm2/logs', optionalAuth, async (req, res) => {
 // Historical Performance API Endpoints
 // ============================================================================
 
-const db = require('./db');
+const db = require('../../db');
 
 // Get closed trades with filters
 app.get('/api/performance/trades', optionalAuth, (req, res) => {
@@ -2057,7 +2057,7 @@ app.get('/api/analytics/gates', optionalAuth, (req, res) => {
     // Fallback: Try to get from local gate analytics instance (for local development)
     // This won't work on Render if bot and UI server are separate services
     try {
-      const { getGateAnalytics } = require('./utils/gate-analytics');
+      const { getGateAnalytics } = require('../../utils/gate-analytics');
       const gateAnalytics = getGateAnalytics();
       
       const stats = gateAnalytics.getStats(market, side, timeWindowMs);
@@ -2388,7 +2388,7 @@ app.get('/api/chart/history', optionalAuth, async (req, res) => {
     const symbol = market.split('-')[0];
     
     // Import Pyth historical fetcher
-    const { PythHistoricalFetcher } = require('./utils/pyth-historical');
+    const { PythHistoricalFetcher } = require('../../utils/pyth-historical');
     const fetcher = new PythHistoricalFetcher();
     
     const barsNeeded = parseInt(bars, 10) || 100;

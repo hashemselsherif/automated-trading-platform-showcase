@@ -284,7 +284,7 @@ async function runTests() {
 
   describe('Deterministic userOrderId Generation', () => {
     test('generates deterministic IDs for same market+purpose', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       const id1 = client._generateUserOrderId(0, 'entry');
@@ -294,7 +294,7 @@ async function runTests() {
     });
 
     test('generates different IDs for different purposes', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       const entryId = client._generateUserOrderId(0, 'entry');
@@ -307,7 +307,7 @@ async function runTests() {
     });
 
     test('generates different IDs for different markets', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       const id1 = client._generateUserOrderId(0, 'entry');
@@ -317,7 +317,7 @@ async function runTests() {
     });
 
     test('IDs are in valid u8 range (1-255)', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       for (let marketIndex = 0; marketIndex < 20; marketIndex++) {
@@ -331,7 +331,7 @@ async function runTests() {
 
   describe('Market Validation', () => {
     test('disableMarket stores disabled market', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       client._disableMarket('TEST-PERP', 'PerpMarketNotFound', 'test error');
@@ -340,7 +340,7 @@ async function runTests() {
     });
 
     test('enableMarket re-enables disabled market', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       client._disableMarket('TEST-PERP', 'test', 'test error');
@@ -351,7 +351,7 @@ async function runTests() {
     });
 
     test('getDisabledMarkets returns list', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       client._disableMarket('TEST1-PERP', 'test', 'error 1');
@@ -366,7 +366,7 @@ async function runTests() {
 
   describe('Uncertainty Window', () => {
     test('enters uncertainty window', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       client._enterUncertaintyWindow('test timeout', 5000);
@@ -374,7 +374,7 @@ async function runTests() {
     });
 
     test('exits uncertainty window after duration', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       client._enterUncertaintyWindow('test', 100); // 100ms
@@ -386,7 +386,7 @@ async function runTests() {
     });
 
     test('extends uncertainty window on new entry', async () => {
-      const DriftPerpsClient = require('../../perps-drift-client');
+      const DriftPerpsClient = require('../../src/execution/perps-drift-client');
       const client = new DriftPerpsClient({ paperTradingMode: true }, {});
       
       client._enterUncertaintyWindow('first', 100);

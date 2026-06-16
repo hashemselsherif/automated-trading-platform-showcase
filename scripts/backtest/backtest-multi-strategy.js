@@ -20,8 +20,8 @@ dotenv.config({ path: path.join(__dirname, '..', '..', '.env.momentum'), overrid
 dotenv.config({ path: path.join(__dirname, '..', '..', '.env.rsi-reversion'), override: true });
 
 // Strategy classes
-const EnhancedMomentumStrategy = require('../../enhanced-momentum-strategy');
-const RsiMeanReversionStrategy = require('../../enhanced-momentum-rsi-strategy');
+const EnhancedMomentumStrategy = require('../../src/strategies/enhanced-momentum-strategy');
+const RsiMeanReversionStrategy = require('../../src/strategies/enhanced-momentum-rsi-strategy');
 const db = require('../../db');
 
 // Constants

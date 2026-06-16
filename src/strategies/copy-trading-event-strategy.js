@@ -4,7 +4,7 @@ const CopyTradingStrategy = require("./copy-trading-strategy");
 const {
   evaluateEventSignal,
   normalizeEventModelConfig,
-} = require("./utils/copy-trading-event-model");
+} = require("../../utils/copy-trading-event-model");
 
 function groupAcceptedEventDecisions(decisions) {
   const grouped = new Map();

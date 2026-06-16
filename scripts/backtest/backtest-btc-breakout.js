@@ -54,7 +54,7 @@ const crypto = require("crypto");
 // NOTE: env already loaded above via ENV_FILE
 
 // Import the BTC Breakout Strategy
-const BtcBreakoutStrategy = require("../../btc-breakout-strategy");
+const BtcBreakoutStrategy = require("../../src/strategies/btc-breakout-strategy");
 
 // Import shared utilities from main backtest
 const db = require("../../db");

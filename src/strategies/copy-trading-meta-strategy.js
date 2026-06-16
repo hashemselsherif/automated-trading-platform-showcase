@@ -4,7 +4,7 @@ const CopyTradingStrategy = require("./copy-trading-strategy");
 const {
   normalizeMetaDecisionConfig,
   evaluateMetaSignal,
-} = require("./utils/copy-trading-meta-model");
+} = require("../../utils/copy-trading-meta-model");
 
 class CopyTradingMetaStrategy extends CopyTradingStrategy {
   constructor(options = {}) {

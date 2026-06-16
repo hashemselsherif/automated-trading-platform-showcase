@@ -47,25 +47,49 @@ flowchart LR
 
 | Area | Files |
 | --- | --- |
-| Runtime orchestration | [bot.js](./bot.js), [config.js](./config.js), [validate-config.js](./validate-config.js) |
+| Runtime orchestration | [bot.js](./bot.js), [config.js](./config.js), [src/core/validate-config.js](./src/core/validate-config.js) |
 | Risk and allocation | [risk-manager.js](./risk-manager.js), [utils/market-allocator.js](./utils/market-allocator.js), [utils/portfolio-risk.js](./utils/portfolio-risk.js), [utils/dynamic-leverage.js](./utils/dynamic-leverage.js) |
 | Strategy loading | [utils/strategy-factory.js](./utils/strategy-factory.js), [utils/strategy-env-manager.js](./utils/strategy-env-manager.js) |
-| Execution | [services/venue-aware-trade-executor.js](./services/venue-aware-trade-executor.js), [perps-live-client.js](./perps-live-client.js), [perps-drift-client.js](./perps-drift-client.js), [drift-subprocess/index.js](./drift-subprocess/index.js) |
-| Data and telemetry | [db.js](./db.js), [journal.js](./journal.js), [logger.js](./logger.js), [utils/gate-analytics.js](./utils/gate-analytics.js) |
-| Operations | [ui-server.js](./ui-server.js), [dashboard.js](./dashboard.js), [telegram-control.js](./telegram-control.js), [control-panel.js](./control-panel.js) |
+| Execution | [src/execution/venue-aware-trade-executor.js](./src/execution/venue-aware-trade-executor.js), [src/execution/perps-live-client.js](./src/execution/perps-live-client.js), [src/execution/perps-drift-client.js](./src/execution/perps-drift-client.js), [drift-subprocess/index.js](./drift-subprocess/index.js) |
+| Data and telemetry | [db.js](./db.js), [src/core/journal.js](./src/core/journal.js), [src/core/logger.js](./src/core/logger.js), [utils/gate-analytics.js](./utils/gate-analytics.js) |
+| Operations | [src/operations/ui-server.js](./src/operations/ui-server.js), [src/operations/dashboard.js](./src/operations/dashboard.js), [src/operations/telegram-control.js](./src/operations/telegram-control.js), [src/operations/control-panel.js](./src/operations/control-panel.js) |
 | Research and validation | [scripts/backtest/](./scripts/backtest), [backtest/](./backtest), [tests/](./tests) |
+
+## File Tree
+
+```text
+.
+├── bot.js                    # runtime entry point
+├── config.js                 # environment-backed configuration
+├── risk-manager.js           # strategy-aware risk rules
+├── db.js                     # SQLite operational schema and query helpers
+├── src/
+│   ├── core/                 # logging, journaling, validation helpers
+│   ├── execution/            # venue clients and execution routing
+│   ├── operations/           # API server, dashboards, control surfaces
+│   └── strategies/           # production strategy implementations
+├── config/                   # public/static market metadata used by included modules
+├── utils/                    # allocator, feeds, risk helpers, copy-trading models
+├── backtest/                 # shared backtest engine utilities
+├── scripts/backtest/         # strategy-specific backtest runners
+├── scripts/test/             # targeted strategy smoke tests
+├── tests/                    # representative unit and integration tests
+├── tools/                    # operational helper source, with no secret values
+├── docs/                     # PRD, ERD, sanitization notes
+└── diagrams/                 # Mermaid architecture diagrams
+```
 
 ## Strategy Files
 
-- [enhanced-momentum-strategy.js](./enhanced-momentum-strategy.js)
-- [enhanced-momentum-rsi-strategy.js](./enhanced-momentum-rsi-strategy.js)
-- [btc-breakout-strategy.js](./btc-breakout-strategy.js)
-- [scalping-strategy.js](./scalping-strategy.js)
-- [predicta-strategy.js](./predicta-strategy.js)
-- [ichimoku-cloud-breakout-strategy.js](./ichimoku-cloud-breakout-strategy.js)
-- [copy-trading-strategy.js](./copy-trading-strategy.js)
-- [copy-trading-event-strategy.js](./copy-trading-event-strategy.js)
-- [copy-trading-meta-strategy.js](./copy-trading-meta-strategy.js)
+- [src/strategies/enhanced-momentum-strategy.js](./src/strategies/enhanced-momentum-strategy.js)
+- [src/strategies/enhanced-momentum-rsi-strategy.js](./src/strategies/enhanced-momentum-rsi-strategy.js)
+- [src/strategies/btc-breakout-strategy.js](./src/strategies/btc-breakout-strategy.js)
+- [src/strategies/scalping-strategy.js](./src/strategies/scalping-strategy.js)
+- [src/strategies/predicta-strategy.js](./src/strategies/predicta-strategy.js)
+- [src/strategies/ichimoku-cloud-breakout-strategy.js](./src/strategies/ichimoku-cloud-breakout-strategy.js)
+- [src/strategies/copy-trading-strategy.js](./src/strategies/copy-trading-strategy.js)
+- [src/strategies/copy-trading-event-strategy.js](./src/strategies/copy-trading-event-strategy.js)
+- [src/strategies/copy-trading-meta-strategy.js](./src/strategies/copy-trading-meta-strategy.js)
 
 ## Implementation Themes
 

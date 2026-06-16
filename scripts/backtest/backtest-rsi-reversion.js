@@ -56,7 +56,7 @@ const crypto = require("crypto");
 // NOTE: env already loaded above via ENV_FILE (respects .env.rsi-reversion-alts for alt strategy)
 
 // Import the RSI Mean-Reversion Strategy
-const RsiMeanReversionStrategy = require("../../enhanced-momentum-rsi-strategy");
+const RsiMeanReversionStrategy = require("../../src/strategies/enhanced-momentum-rsi-strategy");
 
 // Import shared utilities from main backtest
 const db = require("../../db");

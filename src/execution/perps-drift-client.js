@@ -14,9 +14,9 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 require("dotenv").config();
 const { EventEmitter } = require("events");
-const { DriftSubprocessClient } = require("./utils/drift-subprocess-client");
-const driftLookup = require("./utils/drift-market-lookup");
-const { parseLimitOrderConfig } = require("./backtest/utils/drift-limit-config");
+const { DriftSubprocessClient } = require("../../utils/drift-subprocess-client");
+const driftLookup = require("../../utils/drift-market-lookup");
+const { parseLimitOrderConfig } = require("../../backtest/utils/drift-limit-config");
 const {
   classifyError,
   isInsufficientCollateral,
@@ -25,16 +25,16 @@ const {
   isPostOnlyFailure,
   isTimeoutError,
   getRetryDelay,
-} = require("./utils/drift-error-classifier");
+} = require("../../utils/drift-error-classifier");
 
 // Mark price construction (DLOB WebSocket + constructor)
-const DriftDlobWebSocketClient = require("./utils/drift-dlob-websocket-client");
-const DriftMarkPriceConstructor = require("./utils/drift-mark-price-constructor");
+const DriftDlobWebSocketClient = require("../../utils/drift-dlob-websocket-client");
+const DriftMarkPriceConstructor = require("../../utils/drift-mark-price-constructor");
 
 // Database for position ID recovery on restart
 let db = null;
 try {
-  db = require("./db");
+  db = require("../../db");
 } catch (e) {
   // DB not available - will use fallback ID generation
 }
@@ -42,7 +42,7 @@ try {
 // Strategy-scoped environment manager for isolated configs
 let strategyEnv = null;
 try {
-  strategyEnv = require("./utils/strategy-env-manager");
+  strategyEnv = require("../../utils/strategy-env-manager");
 } catch (e) {
   console.warn("[DriftClient] Strategy env manager not available, using process.env");
 }
@@ -651,7 +651,7 @@ class DriftPerpsClient extends EventEmitter {
   _getMarketsToSubscribe() {
     // If activeMarkets were passed during initialization, use only those
     if (this.activeMarkets && this.activeMarkets.length > 0) {
-      const venueRouter = require("./utils/venue-router");
+      const venueRouter = require("../../utils/venue-router");
       const driftMarkets = this.activeMarkets.filter(
         (m) => venueRouter.getVenueForMarket(m) === "drift"
       );
@@ -1315,7 +1315,7 @@ class DriftPerpsClient extends EventEmitter {
       // Get wallet password securely (only when needed)
       let walletPassword = null;
       try {
-        const { getWalletPasswordSync } = require("./utils/secure-password-loader");
+        const { getWalletPasswordSync } = require("../../utils/secure-password-loader");
         walletPassword = getWalletPasswordSync();
         console.log("[DriftClient] Wallet password loaded for subprocess");
       } catch (err) {

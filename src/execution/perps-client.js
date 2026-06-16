@@ -3,9 +3,9 @@ require('dotenv').config();
 const axios = require('axios');
 const { Connection, PublicKey, SystemProgram, Transaction } = require('@solana/web3.js');
 // Use improved multi-source price feed (Jupiter + Coinbase + Pyth + CoinGecko)
-const MultiPriceFeed = require('./utils/improved-multi-price-feed');
+const MultiPriceFeed = require('../../utils/improved-multi-price-feed');
 // Note: MultiPriceFeed refers to ImprovedMultiPriceFeed (naming from require statement)
-const RPCManager = require('./utils/rpc-manager');
+const RPCManager = require('../../utils/rpc-manager');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const nowMs = () => Date.now();

@@ -2,9 +2,9 @@
 const fs = require('fs');
 const axios = require('axios');
 const TelegramBot = require('node-telegram-bot-api');
-const { isValidTelegramUser, rateLimiter } = require('./utils/auth');
-const { sanitizeTelegramCallback } = require('./utils/input-validator');
-const { logCommand, logSecurityEvent, logAuth } = require('./utils/audit-logger');
+const { isValidTelegramUser, rateLimiter } = require('../../utils/auth');
+const { sanitizeTelegramCallback } = require('../../utils/input-validator');
+const { logCommand, logSecurityEvent, logAuth } = require('../../utils/audit-logger');
 
 class TelegramControl {
   constructor(options = {}) {

@@ -116,7 +116,7 @@ class MockShadowManager {
 
 // Tests
 test('VenueAwareTradeExecutor constructor requires jupiter client', () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   let error = null;
   try {
     new VenueAwareTradeExecutor({});
@@ -128,7 +128,7 @@ test('VenueAwareTradeExecutor constructor requires jupiter client', () => {
 });
 
 test('VenueAwareTradeExecutor initializes with jupiter only', () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   
   const executor = new VenueAwareTradeExecutor({
@@ -141,7 +141,7 @@ test('VenueAwareTradeExecutor initializes with jupiter only', () => {
 });
 
 test('VenueAwareTradeExecutor initializes with both clients', () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   
@@ -155,7 +155,7 @@ test('VenueAwareTradeExecutor initializes with both clients', () => {
 });
 
 test('routes SOL-PERP to Jupiter', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   
@@ -173,7 +173,7 @@ test('routes SOL-PERP to Jupiter', async () => {
 });
 
 test('routes BTC-PERP to Jupiter', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   
@@ -190,7 +190,7 @@ test('routes BTC-PERP to Jupiter', async () => {
 });
 
 test('routes JTO-PERP to Drift with limited-live gate', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   const limitedLive = new MockLimitedLiveController();
@@ -210,7 +210,7 @@ test('routes JTO-PERP to Drift with limited-live gate', async () => {
 });
 
 test('blocks Drift when limited-live state is shadow_only', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   const limitedLive = new MockLimitedLiveController();
@@ -236,7 +236,7 @@ test('blocks Drift when limited-live state is shadow_only', async () => {
 });
 
 test('blocks Drift for non-allowed market in limited_live', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   const limitedLive = new MockLimitedLiveController();
@@ -260,7 +260,7 @@ test('blocks Drift for non-allowed market in limited_live', async () => {
 });
 
 test('records shadow trade when blocked and shadow enabled', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   const limitedLive = new MockLimitedLiveController();
@@ -287,7 +287,7 @@ test('records shadow trade when blocked and shadow enabled', async () => {
 });
 
 test('getStats returns correct structure', () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   
   const executor = new VenueAwareTradeExecutor({
@@ -304,7 +304,7 @@ test('getStats returns correct structure', () => {
 });
 
 test('closePosition routes to Jupiter for Jupiter position', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   
@@ -327,7 +327,7 @@ test('closePosition routes to Jupiter for Jupiter position', async () => {
 });
 
 test('closePosition routes to Drift for Drift position', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   const drift = new MockDriftClient();
   
@@ -350,7 +350,7 @@ test('closePosition routes to Drift for Drift position', async () => {
 });
 
 test('getAllOpenPositions aggregates from both venues', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   jupiter.positions = [{ market: 'SOL-PERP', side: 'long' }];
   const drift = new MockDriftClient();
@@ -370,7 +370,7 @@ test('getAllOpenPositions aggregates from both venues', async () => {
 });
 
 test('tracks position venue mapping', async () => {
-  const VenueAwareTradeExecutor = require('../../services/venue-aware-trade-executor');
+  const VenueAwareTradeExecutor = require('../../src/execution/venue-aware-trade-executor');
   const jupiter = new MockJupiterClient();
   
   const executor = new VenueAwareTradeExecutor({

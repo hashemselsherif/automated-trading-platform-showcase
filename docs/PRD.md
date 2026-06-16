@@ -123,9 +123,9 @@ Supported execution states include:
 
 Primary files:
 
-- [services/venue-aware-trade-executor.js](../services/venue-aware-trade-executor.js)
-- [perps-live-client.js](../perps-live-client.js)
-- [perps-drift-client.js](../perps-drift-client.js)
+- [src/execution/venue-aware-trade-executor.js](../src/execution/venue-aware-trade-executor.js)
+- [src/execution/perps-live-client.js](../src/execution/perps-live-client.js)
+- [src/execution/perps-drift-client.js](../src/execution/perps-drift-client.js)
 - [drift-subprocess/index.js](../drift-subprocess/index.js)
 - [utils/venue-router.js](../utils/venue-router.js)
 - [utils/limited-live.js](../utils/limited-live.js)
@@ -137,10 +137,10 @@ The system exposes operational status and controls through server endpoints, Web
 
 Primary files:
 
-- [ui-server.js](../ui-server.js)
-- [dashboard.js](../dashboard.js)
-- [telegram-control.js](../telegram-control.js)
-- [control-panel.js](../control-panel.js)
+- [src/operations/ui-server.js](../src/operations/ui-server.js)
+- [src/operations/dashboard.js](../src/operations/dashboard.js)
+- [src/operations/telegram-control.js](../src/operations/telegram-control.js)
+- [src/operations/control-panel.js](../src/operations/control-panel.js)
 - [db.js](../db.js)
 
 ### Backtesting And Validation
@@ -308,4 +308,3 @@ Public source keeps environment variable names because they are part of the conf
 - Add a simplified local demo mode that runs without private RPC or wallet configuration.
 - Add generated API documentation for dashboard/control endpoints.
 - Add a public synthetic dataset for deterministic backtest demonstrations.
-

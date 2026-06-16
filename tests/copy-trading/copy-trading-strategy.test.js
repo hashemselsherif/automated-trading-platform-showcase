@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const CopyTradingStrategy = require("../../copy-trading-strategy");
+const CopyTradingStrategy = require("../../src/strategies/copy-trading-strategy");
 
 test("elite-used consensus bypasses strategy minLeaders gating", () => {
   const consensusProvider = () => ({

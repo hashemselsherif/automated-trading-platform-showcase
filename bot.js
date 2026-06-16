@@ -274,16 +274,16 @@ const config = require("./config");
 console.log("✅ [STARTUP] Config loaded");
 
 console.log("📦 [STARTUP] Validating config...");
-const validateConfig = require("./validate-config");
+const validateConfig = require("./src/core/validate-config");
 console.log("✅ [STARTUP] Config validator loaded");
 
 console.log("📦 [STARTUP] Loading pretty-log...");
-const pretty = require("./pretty-log");
+const pretty = require("./src/core/pretty-log");
 console.log("✅ [STARTUP] Pretty-log loaded");
 
 // Set UI reference for pretty logs
 console.log("📦 [STARTUP] Loading ui-server...");
-const uiRef = require("./ui-server");
+const uiRef = require("./src/operations/ui-server");
 console.log("✅ [STARTUP] UI server loaded");
 pretty.setUI(uiRef);
 
@@ -308,7 +308,7 @@ console.log("✅ [STARTUP] Utility modules loaded");
 // optional (if present in your repo)
 let log = () => {};
 try {
-  log = require("./logger");
+  log = require("./src/core/logger");
 } catch {
   log = () => {};
 }
@@ -316,15 +316,15 @@ try {
 // Always use Enhanced Momentum Breakout Strategy
 console.log("📦 [STARTUP] Loading strategy modules...");
 const USE_ENHANCED_STRATEGY = true;
-const EnhancedMomentumBreakoutStrategy = require("./enhanced-momentum-strategy");
+const EnhancedMomentumBreakoutStrategy = require("./src/strategies/enhanced-momentum-strategy");
 const RiskManager = require("./risk-manager");
-const journal = require("./journal");
+const journal = require("./src/core/journal");
 const db = require("./db");
 console.log("✅ [STARTUP] Strategy modules loaded");
 
 console.log("📦 [STARTUP] Loading Telegram control...");
-const TelegramControl = require("./telegram-control");
-const GuardedExecutorTelegram = require("./guarded-executor-telegram");
+const TelegramControl = require("./src/operations/telegram-control");
+const GuardedExecutorTelegram = require("./src/execution/guarded-executor-telegram");
 console.log("✅ [STARTUP] Telegram control loaded");
 
 // Strategy environment manager (isolated env per strategy to prevent bleeding)
@@ -340,19 +340,19 @@ if ((process.env.DEBUG_ENV || "false").toLowerCase() === "true") {
 
 // Price + paper simulator
 console.log("📦 [STARTUP] Loading perps clients...");
-const PaperPerpsClient = require("./perps-client");
+const PaperPerpsClient = require("./src/execution/perps-client");
 // Live execution helper (Jupiter majors)
-const LivePerpsClient = require("./perps-live-client");
+const LivePerpsClient = require("./src/execution/perps-live-client");
 // Drift execution client (alts)
-const DriftPerpsClient = require("./perps-drift-client");
+const DriftPerpsClient = require("./src/execution/perps-drift-client");
 // Venue-aware executor (routes to Jupiter or Drift based on market)
 // NOTE: TradeExecutionService is DEPRECATED - all trades go through VenueAwareTradeExecutor
-const VenueAwareTradeExecutor = require("./services/venue-aware-trade-executor");
+const VenueAwareTradeExecutor = require("./src/execution/venue-aware-trade-executor");
 console.log("✅ [STARTUP] Perps clients loaded");
 
 // Web UI server
 console.log("📦 [STARTUP] Loading UI server...");
-const ui = require("./ui-server");
+const ui = require("./src/operations/ui-server");
 console.log("✅ [STARTUP] UI server loaded");
 
 // ---------- Validate config ----------
