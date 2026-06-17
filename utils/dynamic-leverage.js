@@ -1,5 +1,5 @@
 // Dynamic Leverage Manager
-// Implements leverage adjustment strategies used by top traders:
+// Implements leverage adjustment strategies:
 //   - Volatility-based (ATR): Lower leverage in high volatility
 //   - Trend strength (ADX): Higher leverage in strong trends
 //   - Confidence-based: Scale with strategy confidence
