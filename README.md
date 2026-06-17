@@ -7,7 +7,7 @@ This repository contains a sanitized production-source subset of a live automate
 - [docs/PRD.md](./docs/PRD.md): product requirements, capabilities, user flows, risk controls, and success metrics.
 - [docs/ERD.md](./docs/ERD.md): engineering requirements, architecture boundaries, module responsibilities, and acceptance criteria.
 - [diagrams/DIAGRAMS.md](./diagrams/DIAGRAMS.md): GitHub-rendered system flow diagrams for trading, validation, risk, routing, and multi-market execution.
-- [snapshots/dashboard/dashboard-snapshot.png](./snapshots/dashboard/dashboard-snapshot.png): sanitized static dashboard screenshot for a quick visual review.
+- [snapshots/dashboard/trading-engine-dashboard-snapshot.png](./snapshots/dashboard/trading-engine-dashboard-snapshot.png): sanitized static dashboard screenshot for a quick visual review.
 - [snapshots/backtests/rsi-reversion-terminal-output.txt](./snapshots/backtests/rsi-reversion-terminal-output.txt): sanitized terminal output excerpt from a multi-market RSI reversion backtest.
 - [snapshots/logs/](./snapshots/logs): sanitized startup and runtime-loop log excerpts.
 - [docs/SANITIZATION.md](./docs/SANITIZATION.md): what was intentionally excluded from this public showcase.
@@ -48,7 +48,7 @@ flowchart LR
 
 ## Dashboard Snapshot
 
-![Sanitized dashboard snapshot](./snapshots/dashboard/dashboard-snapshot.png)
+![Sanitized trading engine dashboard snapshot](./snapshots/dashboard/trading-engine-dashboard-snapshot.png)
 
 The `snapshots/` folder includes static review artifacts: a dashboard screenshot, the HTML used to render it, sanitized startup/runtime logs, and a terminal-style backtest output excerpt. These are safe public examples with wallet material, RPC URLs, API keys, deployment IDs, raw databases, and full trade logs removed.
 
