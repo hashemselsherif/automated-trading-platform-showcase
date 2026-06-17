@@ -1,4 +1,4 @@
-# Solana Automated Trading System Showcase
+# Automated Trading System Showcase
 
 This repository contains a sanitized production-source subset of a live automated financial trading system on Solana. The platform runs multiple quantitative strategies in parallel, generates real-time trade signals, ranks market opportunities, applies layered risk controls, executes trades, and streams operating status to dashboards and alerts.
 
