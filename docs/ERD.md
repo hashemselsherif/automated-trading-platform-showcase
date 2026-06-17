@@ -202,7 +202,7 @@ sequenceDiagram
 - Repository root remains small and focused on core entry/config files.
 - Non-core runtime modules are grouped under `src/`.
 - Backtest runners and backtest helper libraries are grouped under `scripts/backtest/`.
-- Environment templates exist under `config/env-templates/` with field names, descriptions, and blank values only.
+- Environment templates exist under `config/env-templates/`, with strategy-specific templates grouped under `config/env-templates/strategy-env/`.
 - README links point to the PRD, engineering ERD, diagrams, and sanitization notes.
 - Relative imports resolve after structural moves.
 - Included tests and syntax checks pass for touched paths.
@@ -217,4 +217,3 @@ sequenceDiagram
 | Venue state mismatch | Store venue metadata on open positions and route closes through the original venue. |
 | Secret exposure in showcase | Use sanitized templates, exclude runtime files, and audit generated files for assigned values. |
 | Overloaded root structure | Keep root for core files and group source, docs, config, tests, scripts, and tools in subdirectories. |
-

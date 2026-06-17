@@ -69,7 +69,8 @@ flowchart LR
 │   ├── operations/           # API server, dashboards, control surfaces
 │   └── strategies/           # production strategy implementations
 ├── config/                   # public/static market metadata and env templates
-│   └── env-templates/        # variable-name-only environment templates
+│   └── env-templates/        # shared env template and strategy env templates
+│       └── strategy-env/     # strategy-specific env templates
 ├── utils/                    # allocator, feeds, risk helpers, copy-trading models
 ├── scripts/backtest/         # runnable backtests plus shared helper library
 │   └── lib/                  # reusable backtest engine utilities
