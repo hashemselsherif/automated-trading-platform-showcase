@@ -5,7 +5,7 @@ This repository contains a sanitized production-source subset of a live automate
 ## Review First
 
 - [docs/PRD.md](./docs/PRD.md): product requirements, capabilities, user flows, risk controls, and success metrics.
-- [docs/ERD.md](./docs/ERD.md): full operational data model with Mermaid ERD, table catalog, indexes, and logical relationships.
+- [docs/ERD.md](./docs/ERD.md): engineering requirements, architecture boundaries, module responsibilities, and acceptance criteria.
 - [diagrams/DIAGRAMS.md](./diagrams/DIAGRAMS.md): GitHub-rendered system flow diagrams for trading, validation, risk, routing, and multi-market execution.
 - [docs/SANITIZATION.md](./docs/SANITIZATION.md): what was intentionally excluded from this public showcase.
 

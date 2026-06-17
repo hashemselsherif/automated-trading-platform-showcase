@@ -1,367 +1,220 @@
-# Entity Relationship Diagram
+# Engineering Requirements Document
 
-## Overview
+## Engineering Summary
 
-The system uses SQLite as an operational store for trade lifecycle tracking, duplicate order protection, market-data caching, strategy diagnostics, allocator decisions, instance locking, and copy-trading cohort snapshots.
+The Solana Automated Trading System is an event-driven trading runtime that evaluates multiple strategy engines, ranks opportunities, applies risk controls, routes execution across venue-specific clients, and exposes operational monitoring for live supervision and research iteration.
 
-The schema is implemented in [db.js](../db.js). Most relationships are logical rather than enforced foreign keys because the bot prioritizes lightweight local persistence, backwards-compatible migrations, and runtime resilience.
+This document describes the engineering design, runtime boundaries, major modules, non-functional requirements, and acceptance criteria for the public showcase snapshot.
 
-## High-Level ERD
+## Engineering Goals
+
+- Keep strategy logic modular so multiple strategy families can run in the same process without configuration bleed.
+- Separate signal generation, allocation, risk management, execution routing, persistence, and operator controls.
+- Make trading decisions auditable through structured logs, database records, gate diagnostics, allocator decisions, and tests.
+- Support both research workflows and production-like runtime workflows from the same source structure.
+- Keep public showcase source reviewable while excluding private credentials, wallet material, runtime databases, logs, and generated results.
+
+## System Context
 
 ```mermaid
-erDiagram
-  TRADES_OPEN {
-    TEXT id PK
-    TEXT client_order_id UK
-    INTEGER ts
-    TEXT side
-    REAL entry
-    REAL collateral
-    REAL leverage
-    REAL size
-    TEXT market
-    TEXT mode
-    TEXT trade_type
-    TEXT environment
-    TEXT instance_id
-    TEXT venue
-    TEXT strategy_type
-    TEXT status
-    INTEGER created_at
-    INTEGER updated_at
-  }
-
-  TRADES_CLOSE {
-    TEXT id
-    TEXT client_order_id
-    INTEGER ts
-    REAL exit
-    REAL pnl
-    REAL pnl_percent
-    REAL pnl_usd
-    TEXT reason
-    TEXT market
-    TEXT mode
-    TEXT trade_type
-    TEXT environment
-    TEXT instance_id
-    TEXT venue
-    TEXT strategy_type
-    INTEGER created_at
-  }
-
-  ORDER_GUARD {
-    TEXT client_order_id PK
-    INTEGER ts
-    INTEGER created_at
-  }
-
-  GATE_EVENTS {
-    INTEGER id PK
-    INTEGER ts
-    TEXT market
-    TEXT side
-    TEXT reason
-    REAL price
-    REAL adx
-    REAL atr
-    REAL rsi
-    INTEGER tick
-    TEXT context
-    INTEGER long_ok
-    INTEGER short_ok
-    INTEGER above_ma
-    INTEGER below_ma
-    INTEGER adx_ok
-    INTEGER time_gate_ok
-    INTEGER cooldown_ok_long
-    INTEGER cooldown_ok_short
-    INTEGER don_break_up
-    INTEGER don_break_dn
-    INTEGER created_at
-  }
-
-  ALLOCATOR_DECISIONS {
-    INTEGER id PK
-    INTEGER ts
-    TEXT market
-    TEXT side
-    REAL confidence
-    REAL score
-    INTEGER selected
-    TEXT reason
-    REAL price
-    REAL adx
-    REAL atr
-    REAL rsi
-    INTEGER positions_in_market
-    INTEGER max_positions
-    INTEGER available_slots
-    REAL portfolio_exposure
-    INTEGER signals_count
-    INTEGER created_at
-  }
-
-  MARKET_DATA {
-    TEXT symbol PK
-    TEXT interval PK
-    INTEGER close_time PK
-    INTEGER open_time
-    REAL open
-    REAL high
-    REAL low
-    REAL close
-    REAL base_volume
-    REAL quote_volume
-    INTEGER trade_count
-    REAL taker_base_volume
-    REAL taker_quote_volume
-    INTEGER created_at
-  }
-
-  BOT_INSTANCES {
-    TEXT instance_id PK
-    INTEGER pid
-    TEXT hostname
-    INTEGER started_at
-    INTEGER last_heartbeat
-    TEXT environment
-  }
-
-  COPY_TOPK_SNAPSHOTS {
-    INTEGER id PK
-    INTEGER ts
-    INTEGER topk_count
-    TEXT top_wallet
-    REAL top_wallet_weight
-    TEXT top_wallets_json
-    TEXT topk_json
-    TEXT weights_json
-    TEXT elite_json
-    TEXT overrides_json
-    TEXT snapshot_file
-    INTEGER created_at
-  }
-
-  TRADES_OPEN ||--o{ TRADES_CLOSE : "id / position lifecycle"
-  ORDER_GUARD ||--o| TRADES_OPEN : "client_order_id reservation"
-  BOT_INSTANCES ||--o{ TRADES_OPEN : "instance_id"
-  BOT_INSTANCES ||--o{ TRADES_CLOSE : "instance_id"
-  MARKET_DATA ||--o{ GATE_EVENTS : "market + ts context"
-  MARKET_DATA ||--o{ ALLOCATOR_DECISIONS : "market + ts context"
-  GATE_EVENTS ||--o{ ALLOCATOR_DECISIONS : "diagnostic signal context"
-  COPY_TOPK_SNAPSHOTS ||--o{ ALLOCATOR_DECISIONS : "copy-trading decision context"
+flowchart LR
+  Operator[Operator] --> Controls[Dashboard and Control Surfaces]
+  Researcher[Strategy Researcher] --> Backtests[Backtest Runners]
+  MarketData[Market Data and Oracles] --> Runtime[Trading Runtime]
+  Runtime --> Strategies[Strategy Engines]
+  Runtime --> Allocator[Market Allocator]
+  Runtime --> Risk[Risk Manager]
+  Runtime --> Execution[Venue Execution Layer]
+  Execution --> Solana[Solana Perps Venues]
+  Runtime --> Store[SQLite Operational Store]
+  Store --> Controls
+  Runtime --> Alerts[Alerts and Logs]
 ```
 
-## Runtime Data Flow
+## Runtime Architecture
 
 ```mermaid
 flowchart TB
-  Data[Market data feeds] --> Candles[market_data]
-  Strategy[Strategy signal engine] --> Gates[gate_events]
-  Gates --> Allocator[allocator_decisions]
-  Allocator --> Risk[Risk manager]
-  Risk --> Guard[order_guard]
-  Guard --> Open[trades_open]
-  Open --> Execution[Execution clients]
-  Execution --> Close[trades_close]
-  Open --> Dashboard[Dashboard and API]
-  Close --> Dashboard
-  Gates --> Dashboard
-  Allocator --> Dashboard
-  Copy[Copy-trading cohort refresh] --> TopK[copy_topk_snapshots]
-  TopK --> Allocator
-  Runtime[Runtime heartbeat] --> Instances[bot_instances]
+  Config[Config and Env Loader] --> Bot[bot.js Runtime Loop]
+  Bot --> Price[Price and Market Data Providers]
+  Bot --> Factory[Strategy Factory]
+  Factory --> Momentum[Momentum Strategy]
+  Factory --> Breakout[Breakout Strategy]
+  Factory --> RSI[RSI Reversion Strategy]
+  Factory --> Ichimoku[Ichimoku Strategy]
+  Factory --> Predicta[Predicta Strategy]
+  Factory --> Copy[Copy Trading Strategies]
+  Momentum --> Signals[Candidate Signals]
+  Breakout --> Signals
+  RSI --> Signals
+  Ichimoku --> Signals
+  Predicta --> Signals
+  Copy --> Signals
+  Signals --> Allocator[Opportunity Ranking]
+  Allocator --> Risk[Risk and Sizing]
+  Risk --> Validation[Pre-Trade Validation]
+  Validation --> Router[Venue-Aware Executor]
+  Router --> Jupiter[Jupiter Client]
+  Router --> Drift[Drift Client and Subprocess]
+  Router --> Ledger[Trade Store]
+  Ledger --> UI[API, Dashboard, Alerts]
 ```
 
-## Entity Catalog
-
-### `trades_open`
-
-Tracks active or pending positions. A row is created when an order is accepted into the bot lifecycle and is updated as execution details become available.
-
-Primary key:
-
-- `id`: position identifier
-
-Important fields:
-
-- `client_order_id`: unique order identifier used to connect order reservation and execution
-- `ts`: position open timestamp
-- `side`: `long` or `short`
-- `entry`: entry price
-- `collateral`, `leverage`, `size`: position sizing fields
-- `market`: traded market symbol
-- `mode`: paper/live execution mode
-- `trade_type`: automated/manual classification
-- `venue`: execution venue classification
-- `strategy_type`: strategy responsible for the trade
-- `status`: pending/filled tracking for maker-order flows
-
-Indexes:
-
-- `trades_open_client_order_id_idx` unique index on `client_order_id`
-
-### `trades_close`
-
-Stores position close events and realized performance. Rows are inserted when a position exits, and the corresponding `trades_open` row is deleted by the close logger.
-
-Logical relationship:
-
-- `trades_close.id` maps to `trades_open.id`
-- `trades_close.client_order_id` maps to the original order reservation where available
-
-Important fields:
-
-- `exit`: exit price
-- `pnl`: legacy normalized PnL value
-- `pnl_percent`: PnL stored as a percentage when available
-- `pnl_usd`: absolute PnL when collateral is known
-- `reason`: close reason, such as stop loss, take profit, strategy exit, time stop, or manual close
-- `market`, `mode`, `trade_type`, `venue`, `strategy_type`: close-side classification
-
-### `order_guard`
-
-Prevents duplicate order submission by reserving a `client_order_id` before execution.
-
-Primary key:
-
-- `client_order_id`
-
-Lifecycle:
-
-- Inserted before execution
-- Released when an order is abandoned
-- Linked logically to `trades_open.client_order_id`
-
-### `gate_events`
-
-Captures strategy-level signal diagnostics. These rows explain why entry gates passed or failed.
-
-Important fields:
-
-- `market`, `side`, `reason`
-- `price`, `adx`, `atr`, `rsi`
-- `long_ok`, `short_ok`
-- `above_ma`, `below_ma`
-- `adx_ok`, `time_gate_ok`
-- `cooldown_ok_long`, `cooldown_ok_short`
-- `don_break_up`, `don_break_dn`
-- `context`: JSON payload with additional strategy context
-
-Usage:
-
-- Dashboard gate analysis
-- Strategy debugging
-- Backtest/live parity checks
-- Signal bottleneck analysis
-
-### `allocator_decisions`
-
-Stores market allocator decisions after candidate signals are scored and ranked.
-
-Important fields:
-
-- `market`, `side`
-- `confidence`, `score`
-- `selected`: whether the candidate was selected for execution
-- `reason`: selected or rejected rationale
-- `positions_in_market`, `max_positions`, `available_slots`
-- `portfolio_exposure`, `signals_count`
-
-Usage:
-
-- Explains why the bot selected one opportunity over another
-- Supports debugging portfolio constraints and market ranking
-- Connects strategy outputs to actual execution decisions
-
-### `market_data`
-
-Stores OHLCV candles used for warmup, backtesting, and cached market-data access.
-
-Composite primary key:
-
-- `symbol`
-- `interval`
-- `close_time`
-
-Index:
-
-- `market_data_symbol_interval_time_idx` on `(symbol, interval, close_time)`
-
-Important fields:
-
-- `open_time`, `close_time`
-- `open`, `high`, `low`, `close`
-- `base_volume`, `quote_volume`
-- `trade_count`
-- `taker_base_volume`, `taker_quote_volume`
-
-### `bot_instances`
-
-Prevents conflicting bot processes and records runtime heartbeat state.
-
-Primary key:
-
-- `instance_id`
-
-Index:
-
-- `bot_instances_last_heartbeat_idx` on `last_heartbeat`
-
-Important fields:
-
-- `pid`, `hostname`, `environment`
-- `started_at`, `last_heartbeat`
-
-Usage:
-
-- Instance locking
-- Runtime health checks
-- Multi-environment safety
-
-### `copy_topk_snapshots`
-
-Stores copy-trading cohort snapshots and leader-weight metadata used by copy-trading strategy variants.
-
-Index:
-
-- `copy_topk_snapshots_ts_idx` on `ts`
-
-Important fields:
-
-- `topk_count`
-- `top_wallet`, `top_wallet_weight`
-- `top_wallets_json`
-- `topk_json`, `weights_json`, `elite_json`, `overrides_json`
-- `snapshot_file`
-
-Usage:
-
-- Reconstruct copy-trading leader state
-- Audit copy-trading model inputs
-- Compare cohort quality over time
-
-## Logical Relationships
-
-| Source | Target | Key | Purpose |
-| --- | --- | --- | --- |
-| `order_guard` | `trades_open` | `client_order_id` | Prevent duplicate order submission |
-| `trades_open` | `trades_close` | `id` | Position lifecycle from open to close |
-| `bot_instances` | `trades_open` | `instance_id` | Attribute trades to runtime instance |
-| `bot_instances` | `trades_close` | `instance_id` | Attribute closes to runtime instance |
-| `market_data` | `gate_events` | `market/symbol`, `ts` | Explain signal state using candle context |
-| `gate_events` | `allocator_decisions` | `market`, `side`, `ts` | Connect signal gates to allocator outcomes |
-| `copy_topk_snapshots` | `allocator_decisions` | `ts` window | Connect copy-trading cohort state to allocation |
-
-## Migration Strategy
-
-The database uses idempotent schema setup:
-
-- `CREATE TABLE IF NOT EXISTS` creates base tables.
-- `CREATE INDEX IF NOT EXISTS` creates performance indexes safely.
-- `ensureColumn(table, column, ddl)` adds new columns without destructive migrations.
-- Query code checks column existence for backwards compatibility with older databases.
-
-This keeps local, Render, and historical database files usable as the bot evolves.
+## Repository Boundaries
+
+| Area | Responsibility | Primary Paths |
+| --- | --- | --- |
+| Runtime orchestration | Process startup, strategy loading, loop control, signal evaluation, position lifecycle | `bot.js`, `config.js`, `src/core/validate-config.js` |
+| Strategies | Independent signal engines and entry/exit logic | `src/strategies/` |
+| Allocation and risk | Opportunity ranking, position sizing, exposure controls, leverage selection | `risk-manager.js`, `utils/market-allocator.js`, `utils/portfolio-risk.js`, `utils/dynamic-leverage.js` |
+| Execution | Venue-specific order routing, guarded execution, Drift/Jupiter clients | `src/execution/`, `drift-subprocess/` |
+| Operations | API server, dashboards, Telegram-style controls, logs, journaling | `src/operations/`, `src/core/logger.js`, `src/core/journal.js` |
+| Persistence | Operational trade and diagnostics store | `db.js` |
+| Research | Backtest runners, backtest helper library, targeted tests | `scripts/backtest/`, `tests/` |
+| Configuration | Public market metadata and sanitized env templates | `config/` |
+
+## Functional Engineering Requirements
+
+| ID | Requirement | Implementation Expectation |
+| --- | --- | --- |
+| ER-1 | Strategy isolation | Each strategy loads its own configuration and exposes a signal interface without mutating unrelated strategy state. |
+| ER-2 | Multi-strategy runtime | The runtime can evaluate multiple enabled strategies and pass candidate opportunities into a shared allocator. |
+| ER-3 | Market allocation | The allocator scores candidates using confidence, risk, market constraints, and portfolio state before selecting trades. |
+| ER-4 | Strategy-aware risk | Risk calculations support different sizing, stop, take-profit, time-stop, and leverage rules by strategy type. |
+| ER-5 | Pre-trade validation | Execution requests must pass slippage, market impact, funding, collateral, and duplicate-order checks before live routing. |
+| ER-6 | Venue-aware routing | Open and close requests route through the correct execution client, and the opening venue is retained for close routing. |
+| ER-7 | Operational persistence | Trades, closes, order guards, diagnostics, market data, and runtime locks persist to SQLite-compatible storage. |
+| ER-8 | Operator controls | Runtime state can be inspected and controlled through dashboard/API/alert surfaces. |
+| ER-9 | Research parity | Backtest runners reuse shared helper logic and strategy modules where practical to reduce live/backtest drift. |
+| ER-10 | Sanitized public snapshot | Public source includes reviewable architecture and representative production logic without private runtime values. |
+
+## Non-Functional Engineering Requirements
+
+| Category | Requirement |
+| --- | --- |
+| Safety | Live execution must be gated behind explicit execution mode, risk checks, duplicate-order guards, and venue-specific validation. |
+| Reliability | Optional services should fail closed or degrade safely where possible, especially around price feeds and execution state. |
+| Observability | Strategy gates, allocator decisions, trade lifecycle events, errors, and operator actions should be inspectable. |
+| Maintainability | Strategy, execution, operations, and research code should remain grouped by responsibility. |
+| Testability | Core risk, allocator, strategy, venue-routing, config, and backtest utility paths should have targeted tests. |
+| Security | Secrets, private keys, RPC credentials, API keys, wallet material, databases, and logs must remain outside public source. |
+| Portability | Runtime should support local review, paper mode, and hosted deployment with environment-backed configuration. |
+
+## Data And State Requirements
+
+The system uses a lightweight operational store for runtime state rather than a full relational domain model.
+
+Required state areas:
+
+- Open trade lifecycle state
+- Closed trade and realized PnL records
+- Duplicate-order guard reservations
+- Strategy gate diagnostics
+- Allocator decision diagnostics
+- Candle or market-data cache
+- Runtime instance lock and heartbeat
+- Copy-trading cohort snapshots and decision context
+
+The public implementation for this storage layer is in `db.js`.
+
+## Execution Flow Requirements
+
+```mermaid
+sequenceDiagram
+  participant Runtime
+  participant Strategy
+  participant Allocator
+  participant Risk
+  participant Validator
+  participant Executor
+  participant Store
+  participant Ops
+
+  Runtime->>Strategy: Evaluate market context
+  Strategy-->>Runtime: Signal candidate
+  Runtime->>Allocator: Rank candidates
+  Allocator-->>Runtime: Selected opportunity
+  Runtime->>Risk: Size and exposure check
+  Risk-->>Runtime: Approved sizing or rejection
+  Runtime->>Validator: Slippage/funding/duplicate checks
+  Validator-->>Runtime: Execution approval
+  Runtime->>Executor: Open or close request
+  Executor->>Store: Persist lifecycle result
+  Store-->>Ops: Dashboard and alert state
+```
+
+## Module-Level Requirements
+
+### Runtime
+
+- Load sanitized environment structure from shared and strategy-specific configuration files.
+- Initialize price providers, strategy factory, risk manager, execution clients, persistence, and operations surfaces.
+- Prevent conflicting runtime instances where configured.
+- Continue operating in paper/research modes without requiring live wallet material.
+
+### Strategy Engines
+
+- Produce explicit `open`, `close`, or `hold` decisions.
+- Include enough diagnostic context to explain rejected or accepted signals.
+- Keep market-specific overrides isolated by strategy and symbol.
+- Avoid lookahead bias in backtest-oriented code paths.
+
+### Risk And Allocation
+
+- Compute position size from strategy type, portfolio exposure, leverage settings, and market constraints.
+- Reject trades that exceed total exposure, per-market exposure, leverage limits, or position count.
+- Preserve strategy-specific exit behavior while supporting global safety exits.
+
+### Execution
+
+- Route by configured venue and market support.
+- Track venue metadata for open positions.
+- Support paper, guarded, shadow, limited-live, and live-oriented execution flows.
+- Classify execution errors so retryable, fatal, and state-sync failures are handled differently.
+
+### Operations
+
+- Expose current positions, recent actions, health, and trade status.
+- Provide pause/resume and close-position control paths.
+- Emit alerts for runtime, execution, stale data, and connectivity issues.
+- Keep operator-facing controls separate from strategy decision logic.
+
+### Research And Backtesting
+
+- Keep runnable backtests and shared backtest utilities under `scripts/backtest/`.
+- Keep deterministic tests in `tests/` and `scripts/backtest/lib/__tests__/`.
+- Support strategy-specific backtest entry points without requiring private datasets in the public repo.
+
+## Interface Requirements
+
+| Interface | Direction | Requirement |
+| --- | --- | --- |
+| Environment config | Input | Public templates must show field structure only; real values must remain private. |
+| Market data providers | Input | Runtime must tolerate source-specific failure and use configured fallback behavior. |
+| Strategy factory | Internal | Strategy creation must be driven by enabled strategy configuration. |
+| Risk manager | Internal | Must return explicit approvals/rejections and sizing metadata. |
+| Venue executor | Output | Must normalize open/close behavior across venue clients. |
+| SQLite store | Internal | Must preserve trade lifecycle, diagnostics, and runtime state. |
+| Dashboard/API | Output/Input | Must expose status and accept operator control commands where enabled. |
+
+## Acceptance Criteria
+
+- Repository root remains small and focused on core entry/config files.
+- Non-core runtime modules are grouped under `src/`.
+- Backtest runners and backtest helper libraries are grouped under `scripts/backtest/`.
+- Environment templates exist under `config/env-templates/` with field names, descriptions, and blank values only.
+- README links point to the PRD, engineering ERD, diagrams, and sanitization notes.
+- Relative imports resolve after structural moves.
+- Included tests and syntax checks pass for touched paths.
+
+## Engineering Risks And Mitigations
+
+| Risk | Mitigation |
+| --- | --- |
+| Strategy configuration bleed | Use strategy-specific env loading and explicit strategy factory boundaries. |
+| Live/backtest divergence | Share strategy and helper modules where practical and keep backtest assumptions visible. |
+| Duplicate or conflicting orders | Use order guards, client order IDs, and persisted lifecycle state. |
+| Venue state mismatch | Store venue metadata on open positions and route closes through the original venue. |
+| Secret exposure in showcase | Use sanitized templates, exclude runtime files, and audit generated files for assigned values. |
+| Overloaded root structure | Keep root for core files and group source, docs, config, tests, scripts, and tools in subdirectories. |
 

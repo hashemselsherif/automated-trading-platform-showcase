@@ -205,7 +205,7 @@ flowchart TB
 
 ## Data Model
 
-The operational data model is documented in [ERD.md](./ERD.md).
+The engineering architecture and implementation requirements are documented in [ERD.md](./ERD.md).
 
 Core persistence areas:
 
