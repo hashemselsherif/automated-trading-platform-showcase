@@ -56,7 +56,7 @@ The `snapshots/` folder includes static review artifacts: a dashboard screenshot
 
 ```mermaid
 flowchart TD
-  T[Telegram Bot] --> A[Auth, Rate Limit, Callback Sanitization]
+  T[Telegram Control Layer] --> A[Auth, Rate Limit, Callback Sanitization]
 
   A --> S[Status and Info]
   S --> S1["/start"]
@@ -75,7 +75,7 @@ flowchart TD
   W --> W4["/leaders watch"]
   W --> W5["/followhealth"]
 
-  A --> C[Bot Controls]
+  A --> C[Engine Controls]
   C --> C1["/pause"]
   C --> C2["/resume"]
   C --> C3["/closeall"]
