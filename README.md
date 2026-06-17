@@ -76,6 +76,7 @@ flowchart LR
 │   └── lib/                  # reusable backtest engine utilities
 ├── scripts/test/             # targeted strategy smoke tests
 ├── tests/                    # representative unit and integration tests
+├── snapshots/                # sanitized dashboard, log, and backtest outputs
 ├── tools/                    # operational helper source, with no secret values
 ├── docs/                     # PRD, ERD, sanitization notes
 └── diagrams/                 # Mermaid architecture diagrams

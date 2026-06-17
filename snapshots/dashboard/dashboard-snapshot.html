@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trading Bot Dashboard Snapshot</title>
+  <style>
+    :root { --bg:#0d1412; --panel:#13211d; --panel2:#172b25; --line:#2b463d; --text:#edf6ef; --muted:#9bb5a9; --green:#70e29b; --amber:#f4c95d; --red:#ef6f6c; --blue:#78a6ff; }
+    * { box-sizing:border-box; }
+    body { margin:0; width:1440px; height:960px; background:radial-gradient(circle at 20% 5%, #254138 0, transparent 34%), linear-gradient(135deg, #09100e, #102019 55%, #09100e); font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--text); }
+    .wrap { padding:34px; }
+    header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; }
+    h1 { margin:0; font-size:42px; letter-spacing:-1px; }
+    .sub { color:var(--muted); margin-top:8px; font-size:16px; }
+    .badge { padding:10px 16px; border:1px solid #31584b; border-radius:999px; color:var(--green); background:rgba(112,226,155,.09); font-weight:700; }
+    .grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:18px; margin-bottom:20px; }
+    .card { background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015)); border:1px solid var(--line); border-radius:22px; padding:22px; box-shadow:0 20px 60px rgba(0,0,0,.24); }
+    .label { color:var(--muted); font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
+    .value { margin-top:10px; font-size:34px; font-weight:800; }
+    .value.green { color:var(--green); } .value.amber { color:var(--amber); } .value.blue { color:var(--blue); }
+    .main { display:grid; grid-template-columns: 1.35fr .65fr; gap:18px; }
+    .section-title { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+    h2 { margin:0; font-size:21px; }
+    table { width:100%; border-collapse:collapse; font-size:15px; }
+    th { text-align:left; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.08em; padding:0 0 12px; }
+    td { border-top:1px solid rgba(255,255,255,.08); padding:15px 0; }
+    .pill { display:inline-block; padding:5px 10px; border-radius:999px; background:rgba(120,166,255,.12); color:var(--blue); font-weight:700; font-size:12px; }
+    .ok { color:var(--green); } .warn { color:var(--amber); } .neg { color:var(--red); }
+    .bars { display:grid; gap:14px; }
+    .bar-label { display:flex; justify-content:space-between; color:var(--muted); font-size:13px; margin-bottom:7px; }
+    .track { height:12px; border-radius:999px; background:#0b1512; overflow:hidden; border:1px solid rgba(255,255,255,.06); }
+    .fill { height:100%; background:linear-gradient(90deg, var(--green), var(--blue)); border-radius:999px; }
+    .logs { margin-top:18px; display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    pre { margin:0; white-space:pre-wrap; color:#cfe5d8; font-size:13px; line-height:1.5; font-family:"SFMono-Regular", Consolas, monospace; }
+    .muted { color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div><h1>Automated Trading Bot Dashboard</h1><div class="sub">Sanitized static snapshot for architecture review — no live credentials or account identifiers.</div></div>
+      <div class="badge">SYSTEM ONLINE · PAPER MODE</div>
+    </header>
+    <div class="grid">
+      <div class="card"><div class="label">Open Positions</div><div class="value blue">3</div><div class="sub">Across Drift/Jupiter routes</div></div>
+      <div class="card"><div class="label">Strategy Engines</div><div class="value">6</div><div class="sub">RSI, Ichimoku, Breakout, Copy</div></div>
+      <div class="card"><div class="label">Backtest Win Rate</div><div class="value green">84.17%</div><div class="sub">RSI reversion snapshot</div></div>
+      <div class="card"><div class="label">Max Drawdown</div><div class="value amber">16.99%</div><div class="sub">Research output sample</div></div>
+    </div>
+    <div class="main">
+      <div class="card">
+        <div class="section-title"><h2>Strategy And Market State</h2><span class="pill">multi-strategy allocator</span></div>
+        <table><thead><tr><th>Strategy</th><th>Market</th><th>Signal</th><th>Risk</th><th>Venue</th></tr></thead><tbody>
+          <tr><td>RSI Reversion</td><td>PYTH-PERP</td><td class="ok">long candidate</td><td class="ok">approved</td><td>Drift</td></tr>
+          <tr><td>Ichimoku</td><td>BTC-PERP</td><td>hold</td><td class="warn">cloud filter</td><td>Jupiter</td></tr>
+          <tr><td>Copy Trading</td><td>JUP-PERP</td><td>watch</td><td>leader consensus</td><td>Drift</td></tr>
+          <tr><td>Breakout</td><td>BTC-PERP</td><td>no entry</td><td>range gate</td><td>Jupiter</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card">
+        <div class="section-title"><h2>Allocator Snapshot</h2></div>
+        <div class="bars">
+          <div><div class="bar-label"><span>Signals accepted</span><span>98.4%</span></div><div class="track"><div class="fill" style="width:98%"></div></div></div>
+          <div><div class="bar-label"><span>Portfolio exposure</span><span>sanitized</span></div><div class="track"><div class="fill" style="width:41%"></div></div></div>
+          <div><div class="bar-label"><span>Risk budget used</span><span>34%</span></div><div class="track"><div class="fill" style="width:34%"></div></div></div>
+          <div><div class="bar-label"><span>Data freshness</span><span>OK</span></div><div class="track"><div class="fill" style="width:92%"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="logs">
+      <div class="card"><div class="section-title"><h2>Runtime Loop</h2><span class="muted">sanitized</span></div><pre>[09:01:00] candles refreshed · 16 markets
+[09:01:00] strategies evaluated · 4 candidates
+[09:01:01] allocator selected PYTH-PERP
+[09:01:01] risk approved · leverage=1.0
+[09:01:01] paper order accepted · venue=drift</pre></div>
+      <div class="card"><div class="section-title"><h2>Research Output</h2><span class="muted">RSI reversion</span></div><pre>Total trades: 2533
+Win rate: 84.17%
+Profit factor: 5.30
+Sharpe: 11.32
+SQN rating: Holy Grail</pre></div>
+    </div>
+  </div>
+</body>
+</html>

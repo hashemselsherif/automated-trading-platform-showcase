@@ -1,0 +1,12 @@
+[2026-06-17T09:01:00.004Z] INFO  loop: tick=12843 markets=16 openPositions=3 mode=paper
+[2026-06-17T09:01:00.216Z] INFO  data: candles refreshed interval=5m providers=multi-source stale=false
+[2026-06-17T09:01:00.481Z] INFO  strategy:rsi-reversion market=JUP-PERP side=long signal=hold reason=rsi_neutral
+[2026-06-17T09:01:00.736Z] INFO  strategy:ichimoku market=BTC-PERP side=long signal=hold reason=cloud_filter
+[2026-06-17T09:01:01.021Z] INFO  allocator: candidates=4 selected=1 rejected=0 blockedCapacity=0 acceptanceRate=98.4%
+[2026-06-17T09:01:01.188Z] INFO  risk: market=PYTH-PERP side=long approved=true collateral=sanitized leverage=1.0
+[2026-06-17T09:01:01.352Z] INFO  validation: slippage=ok funding=ok duplicateOrder=false venue=drift
+[2026-06-17T09:01:01.533Z] INFO  execution: paper order accepted clientOrderId=sanitized venue=drift
+[2026-06-17T09:01:01.711Z] INFO  telemetry: gateEvents=42 allocatorDecisions=4 dashboardClients=1
+[2026-06-17T09:01:01.890Z] INFO  loop: completed durationMs=1886 nextTickMs=5000
+
+Sanitized: order IDs, wallet addresses, URLs, credentials, and exact account balances are replaced or omitted.

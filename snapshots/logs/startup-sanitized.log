@@ -1,0 +1,11 @@
+[2026-06-17T09:00:00.000Z] INFO  startup: loading shared configuration
+[2026-06-17T09:00:00.114Z] INFO  startup: strategy env loader initialized
+[2026-06-17T09:00:00.241Z] INFO  startup: enabled strategies: rsi-reversion-alts, ichimoku, copy-trading
+[2026-06-17T09:00:00.377Z] INFO  startup: database schema ready: trades, order_guard, gate_events, allocator_decisions
+[2026-06-17T09:00:00.522Z] INFO  startup: price providers ready: jupiter, pyth, coinbase, coingecko fallback
+[2026-06-17T09:00:00.691Z] INFO  startup: risk manager ready: maxPositions=5 maxLeverage=10 exposureCap=sanitized
+[2026-06-17T09:00:00.836Z] INFO  startup: execution router ready: paper/live/guarded modes supported
+[2026-06-17T09:00:01.025Z] INFO  startup: operations server ready: dashboard, websocket, alerts
+[2026-06-17T09:00:01.170Z] INFO  startup: bot loop entering active monitoring mode
+
+Sanitized: no wallet paths, private keys, API keys, RPC URLs, deployment IDs, or database paths are included.

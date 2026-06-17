@@ -1,0 +1,49 @@
+RSI Reversion Backtest Output Snapshot
+======================================
+
+Strategy: RSI reversion
+Interval: 5m
+Lookback: 360 days
+Markets: JTO, XRP, HYPE, SUI, LINK, JUP, HNT, APT, PAXG, DOGE, RENDER, TAO, DRIFT, FARTCOIN, PYTH, WIF
+
+Summary Metrics
+---------------
+Total trades: 2533
+Wins / losses: 2132 / 401
+Win rate: 84.17%
+Total PnL: $138,671
+Total fees: $13,184
+Max drawdown: 16.99%
+Sharpe: 11.32
+Sortino: 14.10
+Profit factor: 5.30
+SQN rating: Holy Grail
+
+Allocator
+---------
+Signals generated: 2574
+Signals accepted: 2533
+Acceptance rate: 98.4%
+Max concurrent signals: 4
+
+Top Markets By PnL
+------------------
+JTO        trades= 183 pnl=   $41,880 fees=  $3,202
+TAO        trades= 138 pnl=   $16,531 fees=  $1,795
+APT        trades= 345 pnl=   $11,380 fees=  $1,032
+WIF        trades=  76 pnl=   $11,260 fees=    $340
+JUP        trades= 164 pnl=    $7,861 fees=    $408
+PYTH       trades= 175 pnl=    $7,551 fees=    $721
+DRIFT      trades= 111 pnl=    $7,100 fees=    $407
+RENDER     trades= 117 pnl=    $7,070 fees=    $443
+
+Exit Reasons
+------------
+rsi_target_reached     count=2320 pnl=  $173,643 wins=2124
+rsi_hard_stop          count=  10 pnl=   $-9,983 wins=0
+end_of_backtest        count=   4 pnl=   $-3,222 wins=0
+rsi_failure_exit       count= 199 pnl=  $-17,068 wins=8
+
+Sanitization
+------------
+This snapshot excludes raw trades, wallets, private env files, databases, logs, RPC endpoints, API keys, and deployment identifiers.
