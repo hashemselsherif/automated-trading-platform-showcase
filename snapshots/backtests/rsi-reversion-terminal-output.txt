@@ -1,0 +1,93 @@
+$ ENV_FILE=.env.rsi-reversion node --max-old-space-size=8192 scripts/backtest/backtest-rsi-reversion.js --days=360 --interval=5m --symbols=JTO,XRP,HYPE,SUI,LINK,JUP,HNT,APT,PAXG,DOGE,RENDER,TAO,DRIFT,FARTCOIN,PYTH,WIF
+
+Running backtest for 16 market(s) with SHARED capital...
+Markets: JTO, XRP, HYPE, SUI, LINK, JUP, HNT, APT, PAXG, DOGE, RENDER, TAO, DRIFT, FARTCOIN, PYTH, WIF
+Interval: 5m
+Lookback: 360 days
+Tick model: 1m intrabar simulation
+Strategy: RSI mean reversion
+
+BACKTEST SUMMARY
+--------------------------------------------------
+  Total Trades:        2533
+  Winners:             2132
+  Losers:              401
+  Win Rate:            84.17%
+  Total P&L:           $138671.30
+  Total Fees:          $13183.84
+  Max Drawdown:        16.99%
+  Sharpe:              11.32
+  Sortino:             14.10
+  Profit Factor:       5.30
+  SQN:                 9.63
+  SQN Rating:          Holy Grail
+
+ALLOCATOR STATS
+--------------------------------------------------
+  Signals Generated:   2574
+  Signals Accepted:    2533
+  Signals Rejected:    0
+  Blocked by Capacity: 0
+  Blocked by CB:       0
+  Acceptance Rate:     98.4%
+  Max Concurrent Sig:  4
+
+MARKET RESULTS
+--------------------------------------------------
+  JTO        trades=183  pnl=$41880.41   fees=$3201.69
+  TAO        trades=138  pnl=$16530.58   fees=$1795.47
+  APT        trades=345  pnl=$11380.25   fees=$1032.32
+  WIF        trades=76   pnl=$11260.47   fees=$340.07
+  JUP        trades=164  pnl=$7861.04    fees=$407.89
+  PYTH       trades=175  pnl=$7550.78    fees=$721.41
+  DRIFT      trades=111  pnl=$7100.35    fees=$407.39
+  RENDER     trades=117  pnl=$7070.19    fees=$443.42
+  XRP        trades=201  pnl=$5884.68    fees=$1501.65
+  FARTCOIN   trades=87   pnl=$5496.47    fees=$336.01
+  LINK       trades=218  pnl=$4545.22    fees=$1121.83
+  SUI        trades=99   pnl=$3190.80    fees=$26.31
+  HNT        trades=97   pnl=$3078.01    fees=$371.43
+  PAXG       trades=85   pnl=$2858.35    fees=$282.81
+  HYPE       trades=283  pnl=$2127.27    fees=$868.72
+  DOGE       trades=154  pnl=$856.46     fees=$325.43
+
+EXIT REASONS (All Markets)
+--------------------------------------------------
+  rsi_target_reached       2320 trades | Win: 92% | P&L: $173643.05
+  rsi_failure_exit         199 trades  | Win: 4%  | P&L: $-17067.80
+  rsi_hard_stop            10 trades   | Win: 0%  | P&L: $-9983.37
+  end_of_backtest          4 trades    | Win: 0%  | P&L: $-3222.03
+
+POSITION SIZING STATS
+--------------------------------------------------
+  Sizing Method:       fixed
+  Shared Capital:      $100000
+  Position Collateral: $25
+  Leverage:            1x
+  Max Positions:       shared multi-market cap
+
+CAPITAL VALIDATION
+--------------------------------------------------
+  Capital Rule Hits:   NONE - all entries within available capital
+  Liquidations:        0
+
+TRADE STATISTICS
+--------------------------------------------------
+  Winners:             2132 (84%) | Avg: +$82.87
+  Losers:              401 (16%)  | Avg: $-83.07
+  Profit Factor:       5.30
+  Expected Value:      $56.60/trade
+  Worst Trade:         -8.99%
+  CVaR 95:             -0.25%
+
+ROBUSTNESS CHECK
+--------------------------------------------------
+  Bootstrap Runs:      1000
+  Sharpe CI:           9.56 to 13.15
+  Baseline Sharpe:     11.32
+
+Results saved to: <repo>/results/json/rsi-backtest-JTO-XRP-HYPE-SUI-LINK-JUP-HNT-APT-PAXG-DOGE-RENDER-TAO-DRIFT-FARTCOIN-PYTH-WIF-360d-<timestamp>.json
+
+Backtest complete.
+
+Sanitization note: this transcript removes local usernames, raw trade rows, private env values, RPC endpoints, wallet material, deployment IDs, and full generated JSON output.

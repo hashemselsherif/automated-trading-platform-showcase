@@ -7,6 +7,9 @@ This repository contains a sanitized production-source subset of a live automate
 - [docs/PRD.md](./docs/PRD.md): product requirements, capabilities, user flows, risk controls, and success metrics.
 - [docs/ERD.md](./docs/ERD.md): engineering requirements, architecture boundaries, module responsibilities, and acceptance criteria.
 - [diagrams/DIAGRAMS.md](./diagrams/DIAGRAMS.md): GitHub-rendered system flow diagrams for trading, validation, risk, routing, and multi-market execution.
+- [snapshots/dashboard/dashboard-snapshot.png](./snapshots/dashboard/dashboard-snapshot.png): sanitized static dashboard screenshot for a quick visual review.
+- [snapshots/backtests/rsi-reversion-terminal-output.txt](./snapshots/backtests/rsi-reversion-terminal-output.txt): sanitized terminal output excerpt from a multi-market RSI reversion backtest.
+- [snapshots/logs/](./snapshots/logs): sanitized startup and runtime-loop log excerpts.
 - [docs/SANITIZATION.md](./docs/SANITIZATION.md): what was intentionally excluded from this public showcase.
 
 ## System Capabilities
@@ -43,6 +46,61 @@ flowchart LR
   J --> F
 ```
 
+## Dashboard Snapshot
+
+![Sanitized dashboard snapshot](./snapshots/dashboard/dashboard-snapshot.png)
+
+The `snapshots/` folder includes static review artifacts: a dashboard screenshot, the HTML used to render it, sanitized startup/runtime logs, and a terminal-style backtest output excerpt. These are safe public examples with wallet material, RPC URLs, API keys, deployment IDs, raw databases, and full trade logs removed.
+
+## Telegram Controls
+
+```mermaid
+flowchart TD
+  T[Telegram Bot] --> A[Auth, Rate Limit, Callback Sanitization]
+
+  A --> S[Status and Info]
+  S --> S1["/start"]
+  S --> S2["/help"]
+  S --> S3["/ping"]
+  S --> S4["/status"]
+  S --> S5["/markets"]
+  S --> S6["/positions"]
+  S --> S7["/performance"]
+  S --> S8["/portfolio"]
+
+  A --> W[Wallet-Following Review]
+  W --> W1["/leaders"]
+  W --> W2["/leaders SYMBOL"]
+  W --> W3["/leaders core"]
+  W --> W4["/leaders watch"]
+  W --> W5["/followhealth"]
+
+  A --> C[Bot Controls]
+  C --> C1["/pause"]
+  C --> C2["/resume"]
+  C --> C3["/closeall"]
+  C3 --> C4[Confirm close all positions]
+
+  A --> M[Manual Position Review]
+  M --> M1["/manual"]
+  M --> M2["/open"]
+  M2 --> M3[Select market]
+  M3 --> M4[Select long or short]
+  M4 --> M5[Select collateral]
+  M5 --> M6[Select leverage]
+  M6 --> M7[Confirm manual trade parameters]
+
+  A --> P[Position Close Flow]
+  P --> P1["/close"]
+  P1 --> P2[Select open position]
+  P2 --> P3[Close automated position]
+  P2 --> P4[Route manual position to wallet-signed CLI or UI]
+
+  A --> R[Guarded Execution Approval]
+  R --> R1[Approve trade]
+  R --> R2[Reject trade]
+```
+
 ## Repository Guide
 
 | Area | Files |
@@ -76,7 +134,10 @@ flowchart LR
 │   └── lib/                  # reusable backtest engine utilities
 ├── scripts/test/             # targeted strategy smoke tests
 ├── tests/                    # representative unit and integration tests
-├── snapshots/                # sanitized dashboard, log, and backtest outputs
+├── snapshots/                # sanitized dashboard, log, and terminal backtest outputs
+│   ├── dashboard/            # static dashboard screenshot and render HTML
+│   ├── logs/                 # startup and runtime-loop log excerpts
+│   └── backtests/            # terminal output excerpts from backtest runs
 ├── tools/                    # operational helper source, with no secret values
 ├── docs/                     # PRD, ERD, sanitization notes
 └── diagrams/                 # Mermaid architecture diagrams
