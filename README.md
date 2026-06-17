@@ -53,7 +53,7 @@ flowchart LR
 | Execution | [src/execution/venue-aware-trade-executor.js](./src/execution/venue-aware-trade-executor.js), [src/execution/perps-live-client.js](./src/execution/perps-live-client.js), [src/execution/perps-drift-client.js](./src/execution/perps-drift-client.js), [drift-subprocess/index.js](./drift-subprocess/index.js) |
 | Data and telemetry | [db.js](./db.js), [src/core/journal.js](./src/core/journal.js), [src/core/logger.js](./src/core/logger.js), [utils/gate-analytics.js](./utils/gate-analytics.js) |
 | Operations | [src/operations/ui-server.js](./src/operations/ui-server.js), [src/operations/dashboard.js](./src/operations/dashboard.js), [src/operations/telegram-control.js](./src/operations/telegram-control.js), [src/operations/control-panel.js](./src/operations/control-panel.js) |
-| Research and validation | [scripts/backtest/](./scripts/backtest), [backtest/](./backtest), [tests/](./tests) |
+| Research and validation | [scripts/backtest/](./scripts/backtest), [tests/](./tests) |
 
 ## File Tree
 
@@ -70,8 +70,8 @@ flowchart LR
 │   └── strategies/           # production strategy implementations
 ├── config/                   # public/static market metadata used by included modules
 ├── utils/                    # allocator, feeds, risk helpers, copy-trading models
-├── backtest/                 # shared backtest engine utilities
-├── scripts/backtest/         # strategy-specific backtest runners
+├── scripts/backtest/         # runnable backtests plus shared helper library
+│   └── lib/                  # reusable backtest engine utilities
 ├── scripts/test/             # targeted strategy smoke tests
 ├── tests/                    # representative unit and integration tests
 ├── tools/                    # operational helper source, with no secret values

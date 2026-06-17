@@ -6,7 +6,7 @@
  * - drift: Tiered taker/maker fees with maker rebates
  */
 
-const SIMULATION_CONSTANTS = require('../../backtest/backtest-constants');
+const SIMULATION_CONSTANTS = require('../backtest-constants');
 
 /**
  * Fee model definitions

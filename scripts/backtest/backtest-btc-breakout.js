@@ -76,7 +76,7 @@ const {
   formatMemory,
   tryGC,
   estimateMemoryRequirements,
-} = require("../../backtest");
+} = require("./lib");
 
 // ============================================================
 // BOT RUNTIME EVENT MODEL (SOURCE-OF-TRUTH PARITY)
@@ -580,9 +580,9 @@ const SIMULATION_CONSTANTS = {
 };
 
 // Centralized fee config + Drift limit policy parser (used to simulate maker fill → taker fallback)
-const { buildFeeCfg } = require("../../backtest/utils/fee-config");
-const { parseLimitOrderConfig } = require("../../backtest/utils/drift-limit-config");
-const { getOtherPerpFees } = require("../../backtest/utils/drift-other-fees");
+const { buildFeeCfg } = require("./lib/utils/fee-config");
+const { parseLimitOrderConfig } = require("./lib/utils/drift-limit-config");
+const { getOtherPerpFees } = require("./lib/utils/drift-other-fees");
 const { getEffectiveMarginRatios } = require("../../utils/drift-margin");
 // Drift historical data for funding rates
 const {
@@ -602,7 +602,7 @@ const {
   getCapppedPositionSize,
   shouldSkipTrade,
   getMarketConstraints,
-} = require("../../backtest/utils/market-microstructure");
+} = require("./lib/utils/market-microstructure");
 
 // ============================================================
 // FEE CALCULATION FUNCTIONS (Jupiter Perps exact formulas)

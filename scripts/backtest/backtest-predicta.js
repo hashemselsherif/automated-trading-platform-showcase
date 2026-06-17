@@ -106,18 +106,18 @@ const {
   formatMemory,
   tryGC,
   estimateMemoryRequirements,
-} = require("../../backtest");
+} = require("./lib");
 
 // Import fee configuration (same as backtest-rsi-reversion.js)
-const SIMULATION_CONSTANTS = require("../../backtest/backtest-constants");
-const { buildFeeCfg, logFeeConfig } = require("../../backtest/utils/fee-config");
+const SIMULATION_CONSTANTS = require("./lib/backtest-constants");
+const { buildFeeCfg, logFeeConfig } = require("./lib/utils/fee-config");
 const {
   calculatePriceImpactFee,
   calculateOpenFee,
   calculateCloseFee,
   calculateSolanaTransactionFees,
   accrueBorrowFeesIfDue,
-} = require("../../backtest/utils/fee-calculator");
+} = require("./lib/utils/fee-calculator");
 
 // ============================================================
 // BOT RUNTIME EVENT MODEL (SOURCE-OF-TRUTH PARITY)

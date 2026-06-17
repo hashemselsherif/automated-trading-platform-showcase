@@ -5,7 +5,7 @@
  * and efficient backtesting.
  * 
  * Usage:
- *   const { createTypedCandleArray, loadAllMarkets } = require('./backtest');
+ *   Import this module from `scripts/backtest/lib` to access shared helpers.
  */
 
 const typedCandleArray = require('./typed-candle-array');
@@ -26,4 +26,3 @@ module.exports = {
   // RSI strategy config builder
   ...rsiConfigBuilder,
 };
-

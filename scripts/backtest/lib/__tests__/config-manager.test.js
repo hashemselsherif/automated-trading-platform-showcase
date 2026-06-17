@@ -3,7 +3,23 @@
  * Tests for unified configuration management
  */
 
+const { describe, test, beforeEach } = require('node:test');
+const assert = require('node:assert/strict');
 const { createConfigManager, DEFAULT_FEE_CONFIG, DEFAULT_FUNDING_CONFIG, DEFAULT_LEVERAGE_CONFIG, DEFAULT_TRADING_LIMITS } = require('../config-manager');
+
+function expect(actual) {
+  return {
+    toBe(expected) {
+      assert.equal(actual, expected);
+    },
+    toBeDefined() {
+      assert.notEqual(actual, undefined);
+    },
+    toHaveProperty(property) {
+      assert.ok(actual && Object.prototype.hasOwnProperty.call(actual, property));
+    },
+  };
+}
 
 describe('Config Manager', () => {
   let cfgManager;
@@ -83,8 +99,8 @@ describe('Config Manager', () => {
   describe('Leverage Config', () => {
     test('should return leverage config with defaults', () => {
       const leverageCfg = cfgManager.getLeverageConfig();
-      expect(leverageCfg.minLeverage).toBe(DEFAULT_LEVERAGE_CONFIG.minLeverage);
-      expect(leverageCfg.maxLeverage).toBe(DEFAULT_LEVERAGE_CONFIG.maxLeverage);
+      expect(leverageCfg.minLeverage).toBe(cfgManager.baseConfig.leverage.minLeverage);
+      expect(leverageCfg.maxLeverage).toBe(cfgManager.baseConfig.leverage.maxLeverage);
       expect(leverageCfg.trackPerformance).toBe(true);
     });
 

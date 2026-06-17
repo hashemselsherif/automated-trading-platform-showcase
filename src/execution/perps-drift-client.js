@@ -16,7 +16,7 @@ require("dotenv").config();
 const { EventEmitter } = require("events");
 const { DriftSubprocessClient } = require("../../utils/drift-subprocess-client");
 const driftLookup = require("../../utils/drift-market-lookup");
-const { parseLimitOrderConfig } = require("../../backtest/utils/drift-limit-config");
+const { parseLimitOrderConfig } = require("../../scripts/backtest/lib/utils/drift-limit-config");
 const {
   classifyError,
   isInsufficientCollateral,

@@ -2,7 +2,7 @@
  * Funding rate utilities for backtesting
  */
 
-const SIMULATION_CONSTANTS = require('../../backtest/backtest-constants');
+const SIMULATION_CONSTANTS = require('../backtest-constants');
 const { gaussian } = require('./math-utils');
 
 /**

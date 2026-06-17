@@ -367,7 +367,7 @@ try {
 }
 
 // ---------- Initialize config manager ----------
-const { createConfigManager } = require("./backtest/config-manager");
+const { createConfigManager } = require("./scripts/backtest/lib/config-manager");
 const cfgManager = createConfigManager(config);
 
 // ---------- Environment & constants ----------

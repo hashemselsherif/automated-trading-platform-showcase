@@ -267,7 +267,7 @@ function getBacktestFundingRate(fundingCfg, ts, market = null, historicalRates =
   if (ratePer8h === 0 && fundingCfg.wobbleStdBps && fundingCfg.wobbleStdBps > 0) {
     try {
       // Try to get gaussian from backtest utils (for backtest context)
-      const { gaussian } = require('../backtest/utils/math-utils');
+      const { gaussian } = require('../scripts/backtest/lib/utils/math-utils');
       if (gaussian) {
         // Use wobble to simulate funding rate around mean
         // Default mean: 0.01% (0.0001) per 8h if not specified

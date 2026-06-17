@@ -150,7 +150,6 @@ Backtest runners and tests support strategy evaluation, regression detection, al
 Primary paths:
 
 - [scripts/backtest/](../scripts/backtest)
-- [backtest/](../backtest)
 - [tests/](../tests)
 
 ## Functional Requirements

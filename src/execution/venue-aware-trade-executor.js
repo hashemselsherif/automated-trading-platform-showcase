@@ -464,7 +464,7 @@ class VenueAwareTradeExecutor extends EventEmitter {
     }
     
     try {
-      const { calculateTradingFee } = require('../../backtest/utils/fee-calculator');
+      const { calculateTradingFee } = require('../../scripts/backtest/lib/utils/fee-calculator');
       const notionalSize = collateralUsd * leverage;
       
       // Use market-specific exec mode from isolated strategy env to prevent bleeding

@@ -3,7 +3,7 @@
  * Unified configuration resolution, merging, and defaults for backtest simulations
  */
 
-const SIMULATION_CONSTANTS = require('../backtest/backtest-constants');
+const SIMULATION_CONSTANTS = require('./backtest-constants');
 
 /**
  * Default fee configuration
@@ -96,7 +96,7 @@ function isObject(item) {
 class BacktestConfigManager {
   constructor(baseConfig = null) {
     // Resolve base config (use provided or require default)
-    this.baseConfig = baseConfig || require('../config');
+    this.baseConfig = baseConfig || require('../../../config');
     
     // Cache resolved configurations
     this._feeConfig = null;
