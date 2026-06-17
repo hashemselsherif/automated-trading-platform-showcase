@@ -11,4 +11,4 @@ Excluded from this repository:
 - generated backtest outputs and private analysis datasets
 - private copy-trading wallet cohorts, overrides, and strategy-local tuning files
 
-Environment variable names and public/static market metadata remain in the source because they are part of the application interface. Literal credential values are not included.
+Environment variable names and public/static market metadata remain in the source because they are part of the application interface. Environment templates in `config/env-templates/` contain field names only. Literal credential values are not included.

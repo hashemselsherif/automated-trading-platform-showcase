@@ -68,7 +68,8 @@ flowchart LR
 │   ├── execution/            # venue clients and execution routing
 │   ├── operations/           # API server, dashboards, control surfaces
 │   └── strategies/           # production strategy implementations
-├── config/                   # public/static market metadata used by included modules
+├── config/                   # public/static market metadata and env templates
+│   └── env-templates/        # variable-name-only environment templates
 ├── utils/                    # allocator, feeds, risk helpers, copy-trading models
 ├── scripts/backtest/         # runnable backtests plus shared helper library
 │   └── lib/                  # reusable backtest engine utilities
