@@ -1,11 +1,11 @@
-# Automated Trading System Showcase
+# Solana Network Trading Engine Showcase
 
-This repository contains a sanitized production-source subset of a live automated financial trading system on Solana. The platform runs multiple quantitative strategies in parallel, generates real-time trade signals, ranks market opportunities, applies layered risk controls, executes trades, and streams operating status to dashboards and alerts.
+This repository contains a sanitized production-source subset of a live Solana network application for automated financial trading. The trading engine runs multiple quantitative strategies in parallel, evaluates opportunities across markets, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and streams operating status to dashboards and alerts.
 
 ## Review First
 
 - [docs/PRD.md](./docs/PRD.md): product requirements, capabilities, user flows, risk controls, and success metrics.
-- [docs/ERD.md](./docs/ERD.md): engineering requirements, architecture boundaries, module responsibilities, and acceptance criteria.
+- [docs/ERD.md](./docs/ERD.md): engineering requirements, network/application boundaries, module responsibilities, and acceptance criteria.
 - [diagrams/DIAGRAMS.md](./diagrams/DIAGRAMS.md): GitHub-rendered system flow diagrams for trading, validation, risk, routing, and multi-market execution.
 - [snapshots/dashboard/trading-engine-dashboard-snapshot.png](./snapshots/dashboard/trading-engine-dashboard-snapshot.png): sanitized static dashboard screenshot for a quick visual review.
 - [snapshots/backtests/rsi-reversion-terminal-output.txt](./snapshots/backtests/rsi-reversion-terminal-output.txt): sanitized terminal output excerpt from a multi-market RSI reversion backtest.
@@ -103,15 +103,15 @@ flowchart TD
 
 ## Repository Guide
 
-| Area | Files |
-| --- | --- |
-| Runtime orchestration | [bot.js](./bot.js), [config.js](./config.js), [src/core/validate-config.js](./src/core/validate-config.js) |
-| Risk and allocation | [risk-manager.js](./risk-manager.js), [utils/market-allocator.js](./utils/market-allocator.js), [utils/portfolio-risk.js](./utils/portfolio-risk.js), [utils/dynamic-leverage.js](./utils/dynamic-leverage.js) |
-| Strategy loading | [utils/strategy-factory.js](./utils/strategy-factory.js), [utils/strategy-env-manager.js](./utils/strategy-env-manager.js) |
-| Execution | [src/execution/venue-aware-trade-executor.js](./src/execution/venue-aware-trade-executor.js), [src/execution/perps-live-client.js](./src/execution/perps-live-client.js), [src/execution/perps-drift-client.js](./src/execution/perps-drift-client.js), [drift-subprocess/index.js](./drift-subprocess/index.js) |
-| Data and telemetry | [db.js](./db.js), [src/core/journal.js](./src/core/journal.js), [src/core/logger.js](./src/core/logger.js), [utils/gate-analytics.js](./utils/gate-analytics.js) |
-| Operations | [src/operations/ui-server.js](./src/operations/ui-server.js), [src/operations/dashboard.js](./src/operations/dashboard.js), [src/operations/telegram-control.js](./src/operations/telegram-control.js), [src/operations/control-panel.js](./src/operations/control-panel.js) |
-| Research and validation | [scripts/backtest/](./scripts/backtest), [tests/](./tests) |
+| Area                    | Files                                                                                                                                                                                                                                                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Runtime orchestration   | [bot.js](./bot.js), [config.js](./config.js), [src/core/validate-config.js](./src/core/validate-config.js)                                                                                                                                                                                                       |
+| Risk and allocation     | [risk-manager.js](./risk-manager.js), [utils/market-allocator.js](./utils/market-allocator.js), [utils/portfolio-risk.js](./utils/portfolio-risk.js), [utils/dynamic-leverage.js](./utils/dynamic-leverage.js)                                                                                                   |
+| Strategy loading        | [utils/strategy-factory.js](./utils/strategy-factory.js), [utils/strategy-env-manager.js](./utils/strategy-env-manager.js)                                                                                                                                                                                       |
+| Execution               | [src/execution/venue-aware-trade-executor.js](./src/execution/venue-aware-trade-executor.js), [src/execution/perps-live-client.js](./src/execution/perps-live-client.js), [src/execution/perps-drift-client.js](./src/execution/perps-drift-client.js), [drift-subprocess/index.js](./drift-subprocess/index.js) |
+| Data and telemetry      | [db.js](./db.js), [src/core/journal.js](./src/core/journal.js), [src/core/logger.js](./src/core/logger.js), [utils/gate-analytics.js](./utils/gate-analytics.js)                                                                                                                                                 |
+| Operations              | [src/operations/ui-server.js](./src/operations/ui-server.js), [src/operations/dashboard.js](./src/operations/dashboard.js), [src/operations/telegram-control.js](./src/operations/telegram-control.js), [src/operations/control-panel.js](./src/operations/control-panel.js)                                     |
+| Research and validation | [scripts/backtest/](./scripts/backtest), [tests/](./tests)                                                                                                                                                                                                                                                       |
 
 ## File Tree
 
@@ -121,6 +121,7 @@ flowchart TD
 ├── config.js                 # environment-backed configuration
 ├── risk-manager.js           # strategy-aware risk rules
 ├── db.js                     # SQLite operational schema and query helpers
+├── LICENSE                   # ISC license matching the production repo
 ├── src/
 │   ├── core/                 # logging, journaling, validation helpers
 │   ├── execution/            # venue clients and execution routing
@@ -165,3 +166,7 @@ flowchart TD
 ## Public Showcase Scope
 
 This is a code-reviewable snapshot, not a turnkey deployment. Live trading requires private environment configuration, RPC endpoints, wallet material, and operational secrets that are deliberately not included.
+
+## License
+
+ISC License. See [LICENSE](./LICENSE).

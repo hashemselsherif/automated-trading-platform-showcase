@@ -34,7 +34,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Sanitized showcase of a Solana network trading engine with multi-strategy execution, risk controls, dashboards, and backtesting artifacts.",
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"

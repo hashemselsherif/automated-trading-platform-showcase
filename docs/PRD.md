@@ -2,22 +2,32 @@
 
 ## Product Summary
 
-The Solana Automated Trading System is a production trading platform that runs multiple quantitative strategies in parallel, evaluates market opportunities in real time, applies layered risk controls, executes trades through venue-specific clients, and exposes dashboards, alerts, and backtesting workflows for monitoring and iteration.
+The Solana Network Trading Engine is a production-grade network application for automated financial trading across Solana-based perpetuals venues, market-data feeds, and operational control surfaces. It is not a single-market strategy script. It is a multi-market orchestration layer that runs multiple quantitative strategies in parallel, evaluates opportunities in real time, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and exposes dashboards, alerts, logs, and backtesting workflows for monitoring and iteration.
 
 This showcase repository contains a sanitized source-code snapshot intended for technical review. It excludes private environment files, wallet material, runtime databases, logs, caches, and generated result dumps.
 
+## Product Positioning
+
+- **Application type:** Solana network application for financial-trading automation, research, execution, and monitoring.
+- **Market scope:** Multi-market and multi-strategy; the runtime can evaluate different assets and strategy families in the same loop.
+- **Network scope:** Integrates Solana transaction clients, perpetuals venue clients, oracle/price infrastructure, WebSocket streams, RPC-backed state reads, and operator-facing APIs.
+- **Product value:** Gives an operator and strategy researcher one controlled environment for signal generation, opportunity ranking, risk gating, execution routing, monitoring, and post-trade review.
+- **Primary innovation:** Combines strategy orchestration, portfolio-aware allocation, venue-aware execution, staged live modes, and research parity in one runtime instead of separating them into disconnected scripts.
+
 ## Goals
 
+- Operate as a Solana network application with explicit boundaries between market-data ingestion, strategy evaluation, risk controls, execution clients, persistence, and operator surfaces.
 - Run multiple strategy families in the same runtime without configuration bleed between strategies.
 - Evaluate signals across markets, rank opportunities, and select trades under portfolio constraints.
 - Apply risk controls before and after execution, including sizing, leverage bounds, stop logic, exposure limits, and duplicate-order protection.
 - Route execution through the appropriate venue client while supporting paper, live, guarded, shadow, and limited-live flows.
+- Normalize venue and network conditions, including market support, liquidity/slippage constraints, funding context, collateral availability, RPC behavior, and execution-mode gates.
 - Provide operational visibility through dashboards, APIs, logs, Telegram-style controls, analytics tables, and backtesting tools.
 - Support research iteration through deterministic backtests, strategy sweeps, and diagnostic tests.
 
 ## Non-Goals
 
-- This showcase repository is not intended to be run as a live trading bot without private configuration, wallets, RPC endpoints, and deployment secrets.
+- This showcase repository is not intended to be run as a live trading engine without private configuration, wallets, RPC endpoints, and deployment secrets.
 - The public repository does not include proprietary local datasets, generated analysis outputs, or private leader-wallet configuration.
 - The system does not guarantee trading profitability. It is an engineering platform for automated trading research, execution, and monitoring.
 
@@ -70,6 +80,30 @@ Needs:
 
 ## Core Capabilities
 
+### Solana Network Application Layer
+
+The application coordinates Solana-facing infrastructure and off-chain decisioning. It treats network connectivity, venue routing, transaction submission, price freshness, and collateral state as first-class runtime concerns rather than incidental helper calls.
+
+Network-facing capabilities include:
+
+- RPC-backed account and market-state access
+- Solana transaction construction, retry, and error classification
+- Venue-specific perpetuals clients
+- Oracle and price-feed integration for market context
+- WebSocket-driven market, leader-wallet, and operational updates
+- Collateral, margin, slippage, funding, and liquidation-risk checks before execution
+
+Primary files:
+
+- [src/execution/perps-live-client.js](../src/execution/perps-live-client.js)
+- [src/execution/perps-drift-client.js](../src/execution/perps-drift-client.js)
+- [src/execution/perps-raw-client.js](../src/execution/perps-raw-client.js)
+- [utils/rpc-manager.js](../utils/rpc-manager.js)
+- [utils/pyth-websocket-client.js](../utils/pyth-websocket-client.js)
+- [utils/improved-multi-price-feed.js](../utils/improved-multi-price-feed.js)
+- [utils/transaction-retry.js](../utils/transaction-retry.js)
+- [utils/drift-margin.js](../utils/drift-margin.js)
+
 ### Multi-Strategy Runtime
 
 The runtime loads strategy-specific configuration and supports multiple strategy families:
@@ -111,7 +145,7 @@ Primary files:
 
 ### Venue-Aware Execution
 
-The platform routes trades by market and venue state. It tracks which venue opened a position so closes route correctly.
+The platform routes trades by market, venue support, execution mode, and network state. It tracks which venue opened a position so closes route correctly and separates paper, guarded, shadow, limited-live, and live-oriented execution paths.
 
 Supported execution states include:
 
@@ -133,7 +167,7 @@ Primary files:
 
 ### Monitoring And Control
 
-The system exposes operational status and controls through server endpoints, WebSockets, terminal dashboards, and Telegram-style controls.
+The application exposes operational status and controls through server endpoints, WebSockets, terminal dashboards, and Telegram-style controls. These surfaces are designed for supervision, not just reporting: operators can pause/resume execution, close positions, inspect portfolio risk, review strategy state, and validate system health without shell access.
 
 Primary files:
 
@@ -154,46 +188,54 @@ Primary paths:
 
 ## Functional Requirements
 
-| ID | Requirement | Acceptance Criteria |
-| --- | --- | --- |
-| FR-1 | Load strategy configuration by strategy and market | Strategy config does not bleed across unrelated strategy variants |
-| FR-2 | Generate signals from multiple strategies | Runtime can evaluate each enabled strategy and return open/close/hold decisions |
-| FR-3 | Rank candidate trades | Allocator scores candidates and selects best opportunities under constraints |
-| FR-4 | Enforce position sizing | Risk manager computes size using strategy risk profile and portfolio state |
-| FR-5 | Enforce exposure controls | New trades are blocked when position count, leverage, or exposure limits fail |
-| FR-6 | Validate execution quality | Slippage, market impact, funding, and duplicate-order checks run before execution |
-| FR-7 | Route trades by venue | Execution layer selects the correct venue and records venue per position |
-| FR-8 | Track trade lifecycle | Opens, closes, PnL, reason codes, venue, strategy, and mode are persisted |
-| FR-9 | Emit diagnostics | Gate events and allocator decisions are logged for debugging and review |
-| FR-10 | Provide operator controls | Operator can pause, resume, close positions, and monitor runtime state |
-| FR-11 | Support backtests | Strategy runners can simulate historical performance using shared backtest utilities |
-| FR-12 | Prevent duplicate runtime instances | Instance lock and heartbeat prevent multiple conflicting bot processes |
+| ID    | Requirement                                        | Acceptance Criteria                                                                                                                        |
+| ----- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| FR-0  | Operate as a Solana network application            | Runtime separates off-chain decisioning from Solana network access, transaction routing, venue clients, price feeds, and operator surfaces |
+| FR-1  | Load strategy configuration by strategy and market | Strategy config does not bleed across unrelated strategy variants                                                                          |
+| FR-2  | Generate signals from multiple strategies          | Runtime can evaluate each enabled strategy and return open/close/hold decisions                                                            |
+| FR-3  | Rank candidate trades                              | Allocator scores candidates and selects best opportunities under constraints                                                               |
+| FR-4  | Enforce position sizing                            | Risk manager computes size using strategy risk profile and portfolio state                                                                 |
+| FR-5  | Enforce exposure controls                          | New trades are blocked when position count, leverage, or exposure limits fail                                                              |
+| FR-6  | Validate execution quality                         | Slippage, market impact, funding, and duplicate-order checks run before execution                                                          |
+| FR-7  | Route trades by venue                              | Execution layer selects the correct venue and records venue per position                                                                   |
+| FR-8  | Track trade lifecycle                              | Opens, closes, PnL, reason codes, venue, strategy, and mode are persisted                                                                  |
+| FR-9  | Emit diagnostics                                   | Gate events and allocator decisions are logged for debugging and review                                                                    |
+| FR-10 | Provide operator controls                          | Operator can pause, resume, close positions, and monitor runtime state                                                                     |
+| FR-11 | Support backtests                                  | Strategy runners can simulate historical performance using shared backtest utilities                                                       |
+| FR-12 | Prevent duplicate runtime instances                | Instance lock and heartbeat prevent multiple conflicting engine processes                                                                  |
+| FR-13 | Track network and venue health                     | Runtime can surface stale price data, disconnected streams, execution errors, and degraded venue/network conditions                        |
+| FR-14 | Support staged execution rollout                   | Paper, guarded, shadow, limited-live, and live-oriented modes allow strategy and execution changes to be deployed incrementally            |
 
 ## Non-Functional Requirements
 
-| Category | Requirement |
-| --- | --- |
-| Reliability | The bot must continue operating when optional services are unavailable where safe fallback behavior exists |
-| Safety | Execution must pass risk and validation gates before sending live orders |
-| Observability | Runtime decisions must be inspectable through logs, database records, dashboards, and tests |
-| Security | Secrets must be loaded from environment or encrypted storage and excluded from public source |
-| Testability | Core strategy, allocator, venue-routing, risk, and copy-trading components must have targeted tests |
-| Maintainability | Strategy and venue concerns should stay modular so new strategies or execution paths can be added |
-| Portability | The system should support local and hosted operation with configurable database and RPC paths |
+| Category        | Requirement                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Reliability     | The engine must continue operating when optional services are unavailable where safe fallback behavior exists               |
+| Safety          | Execution must pass risk and validation gates before sending live orders                                                    |
+| Observability   | Runtime decisions must be inspectable through logs, database records, dashboards, and tests                                 |
+| Security        | Secrets must be loaded from environment or encrypted storage and excluded from public source                                |
+| Testability     | Core strategy, allocator, venue-routing, risk, and copy-trading components must have targeted tests                         |
+| Maintainability | Strategy and venue concerns should stay modular so new strategies or execution paths can be added                           |
+| Portability     | The application should support local and hosted operation with configurable database, RPC, wallet, and execution-mode paths |
 
 ## Product Architecture
 
 ```mermaid
 flowchart TB
-  Data[Market Data Feeds] --> Price[Price Provider]
+  Solana[Solana Network] --> RPC[RPC and Account State]
+  Oracles[Oracle and Price Streams] --> Price[Price Provider]
+  VenueState[Venue Market State] --> Price
+  RPC --> ExecutionContext[Network Execution Context]
   Price --> StrategyFactory[Strategy Factory]
   StrategyFactory --> Strategies[Strategy Engines]
   Strategies --> Gates[Gate Diagnostics]
   Strategies --> Allocator[Market Allocator]
   Allocator --> Risk[Risk Manager]
-  Risk --> Validation[Slippage Impact Funding Validation]
+  Risk --> Validation[Slippage Impact Funding Collateral Validation]
+  ExecutionContext --> Validation
   Validation --> Executor[Venue-Aware Executor]
-  Executor --> Clients[Execution Clients]
+  Executor --> Clients[Solana Venue Clients]
+  Clients --> Solana
   Clients --> Ledger[Trade Store]
   Gates --> Ledger
   Allocator --> Ledger
@@ -219,18 +261,19 @@ Core persistence areas:
 
 ## Key User Flows
 
-### Automated Trade Entry
+### Network Trade Entry
 
 1. Runtime refreshes market data.
-2. Strategy factory evaluates enabled strategies.
-3. Strategy emits candidate signal.
-4. Market allocator scores and ranks candidates.
-5. Risk manager sizes the position and checks exposure.
-6. Validation checks slippage, market impact, funding, and duplicate order state.
-7. Venue-aware executor routes order to the correct execution client.
-8. Trade lifecycle is logged and streamed to dashboards.
+2. Price providers and venue clients normalize Solana network, oracle, and market state.
+3. Strategy factory evaluates enabled strategies.
+4. Strategy emits candidate signal.
+5. Market allocator scores and ranks candidates.
+6. Risk manager sizes the position and checks exposure.
+7. Validation checks slippage, market impact, funding, collateral, price freshness, and duplicate order state.
+8. Venue-aware executor routes order to the correct execution client and execution mode.
+9. Trade lifecycle is logged and streamed to dashboards.
 
-### Automated Trade Exit
+### Network Trade Exit
 
 1. Runtime monitors open positions.
 2. Strategy-specific exit checks run.
@@ -255,6 +298,8 @@ Core persistence areas:
 - Dynamic leverage adjustments
 - Funding-rate checks
 - Slippage and market-impact validation
+- Price freshness and stale-feed protection
+- Venue and network-mode gating
 - Duplicate-order guard
 - Instance lock to prevent conflicting runtimes
 - Shadow and limited-live modes for staged rollout
@@ -270,7 +315,8 @@ The system exposes observability through:
 - WebSocket status streaming
 - API endpoints
 - Terminal dashboard
-- Backtest summaries
+- Terminal backtest output snapshots
+- Execution-quality and venue-routing diagnostics
 - Targeted tests
 
 ## Test Coverage Areas
@@ -300,10 +346,11 @@ Public source keeps environment variable names because they are part of the conf
 - Open and close lifecycle records are complete enough to audit trading behavior.
 - Backtest and live logic stay comparable enough to diagnose performance drift.
 - Operators can monitor status and intervene without shell access.
+- Network and venue failures are visible, classified, and handled through safe fallback or fail-closed behavior.
 
 ## Future Improvements
 
-- Add a static dashboard screenshot set to the showcase repository.
 - Add a simplified local demo mode that runs without private RPC or wallet configuration.
 - Add generated API documentation for dashboard/control endpoints.
 - Add a public synthetic dataset for deterministic backtest demonstrations.
+- Add network-health replay fixtures for deterministic venue/RPC failure testing.
