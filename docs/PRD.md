@@ -2,7 +2,7 @@
 
 ## Product Summary
 
-The Solana Network Trading Engine is a production-grade DeFi network application for automated financial trading across Solana-based perpetuals venues, market-data feeds, and operational control surfaces. It is not a single-market strategy script. It is a multi-market orchestration layer that runs multiple quantitative strategies in parallel, evaluates opportunities in real time, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and exposes dashboards, alerts, logs, and backtesting workflows for monitoring and iteration.
+The Trading Engine is a Solana-based production-grade DeFi network application for automated financial trading across Solana-based perpetuals venues, market-data feeds, and operational control surfaces. It is not a single-market strategy script. It is a multi-market orchestration layer that runs multiple quantitative strategies in parallel, evaluates opportunities in real time, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and exposes dashboards, alerts, logs, and backtesting workflows for monitoring and iteration.
 
 This showcase repository contains a sanitized source-code snapshot intended for technical review. It excludes private environment files, wallet material, runtime databases, logs, caches, and generated result dumps.
 
