@@ -1,6 +1,6 @@
 # Solana Network Trading Engine Showcase
 
-This repository contains a sanitized production-source subset of a live Solana network application for automated financial trading. The trading engine runs multiple quantitative strategies in parallel, evaluates opportunities across markets, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and streams operating status to dashboards and alerts.
+This repository contains a sanitized production-source subset of a live Solana DeFi network application for automated financial trading. The trading engine runs multiple quantitative strategies in parallel, evaluates opportunities across markets, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and streams operating status to dashboards and alerts.
 
 The engine uses a DeFi-native execution model: trades are routed through Solana-based venues from a wallet-controlled setup, so operation does not require a centralized exchange account or exchange custody. This keeps access permissionless, supports multiple venues from one runtime, and makes wallet, RPC, venue, and risk configuration the primary deployment inputs. Current showcase paths include Solana DeFi venues such as Drift and Jupiter, with an adapter-based structure that can extend to additional DeFi venue types such as dYdX-style perpetuals or AMM-style venues such as PancakeSwap where compatible adapters are added.
 
