@@ -10,7 +10,7 @@ The system should be evaluated as a multi-market Solana network application, not
 
 ## Engineering Goals
 
-- Establish clear boundaries between Solana network access, venue clients, strategy evaluation, portfolio/risk controls, persistence, and operator surfaces.
+- Establish clear boundaries between Solana network access, venue clients, strategy evaluation, dynamic allocation, portfolio/risk controls, persistence, secrets handling, and operator surfaces.
 - Preserve a DeFi-native execution boundary where wallet-controlled Solana access replaces centralized exchange account custody.
 - Keep strategy logic modular so multiple strategy families can run in the same process without configuration bleed.
 - Separate signal generation, allocation, risk management, execution routing, persistence, and operator controls.
@@ -49,6 +49,7 @@ flowchart LR
 | Allocation/risk layer     | Opportunity ranking, position sizing, exposure checks, stop logic, leverage controls                 | This layer owns portfolio constraints and must reject invalid opportunities before execution.                                       |
 | Network integration layer | RPC access, price/oracle feeds, venue market state, WebSocket streams                                | Network state should be normalized before it influences strategy or execution decisions.                                            |
 | DeFi execution layer      | Wallet-based venue access, open/close routing, transaction submission, retries, error classification | Execution clients should hide venue differences behind normalized lifecycle results without requiring centralized exchange custody. |
+| Security/secrets layer    | Encrypted wallets, encrypted secrets bundles, permission checks, masked displays, secure loading     | Private key and credential material must never be committed, logged, or passed through public showcase artifacts.                   |
 | Persistence layer         | Trade lifecycle, diagnostics, order guards, runtime locks, cached market state                       | Persistence supports auditability, duplicate-order prevention, and operator visibility.                                             |
 | Research layer            | Backtests, strategy sweeps, execution simulations, deterministic tests                               | Research tooling should reuse production strategy/risk logic where practical to reduce drift.                                       |
 
@@ -102,35 +103,42 @@ flowchart TB
 
 ## Technical Innovations
 
-| Innovation Area            | Description                                                                                                                                                                                                    | Why It Matters                                                                                                |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Strategy-isolated runtime  | Multiple strategy families run in one process while preserving strategy-specific configuration, parameters, and diagnostics.                                                                                   | Prevents config bleed and makes the engine extensible without duplicating runtime code.                       |
-| Portfolio-aware allocation | Candidate signals are ranked against portfolio state, market constraints, confidence, and capacity before risk sizing.                                                                                         | Avoids treating each market signal independently when capital and exposure are shared.                        |
-| DeFi-native access         | Execution is wallet-based and can connect to multiple Solana venues without centralized exchange account infrastructure.                                                                                       | Improves access, keeps custody outside centralized exchanges, and makes venue expansion configuration-driven. |
-| Venue adapter architecture | Current showcase paths include Drift/Jupiter, with a normalized boundary for additional DeFi venue types such as dYdX-style perps or AMM-style venues such as PancakeSwap where compatible adapters are added. | Keeps venue expansion separate from strategy, risk, and operator-control logic.                               |
-| Venue-aware execution      | Opens and closes route through the correct venue/client, with venue metadata retained on positions.                                                                                                            | Reduces state mismatch when multiple Solana execution paths are available.                                    |
-| Staged live modes          | Paper, guarded, shadow, limited-live, and live-oriented paths support progressive rollout.                                                                                                                     | Lets strategy and execution changes be validated before full live exposure.                                   |
-| Research/runtime parity    | Backtest runners and production modules share helper logic where practical.                                                                                                                                    | Reduces false confidence from research paths that diverge from live assumptions.                              |
-| Operational auditability   | Gate events, allocator decisions, trade lifecycle records, logs, and dashboards are all part of the product.                                                                                                   | Makes the engine reviewable and operable rather than opaque.                                                  |
+| Innovation Area                       | Description                                                                                                                                                                                                    | Why It Matters                                                                                                |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Strategy-isolated runtime             | Multiple strategy families run in one process while preserving strategy-specific configuration, parameters, and diagnostics.                                                                                   | Prevents config bleed and makes the engine extensible without duplicating runtime code.                       |
+| Strategy/market-aware allocator       | Candidate signals are ranked against strategy type, market tier, performance history, correlation exposure, venue capital pool, confidence, and volatility before risk sizing.                                 | Avoids treating each market signal independently when capital, venue exposure, and strategy edge are shared.  |
+| Allocator-driven risk recommendations | The allocator can map selected opportunities into size, leverage, stop, and rank-tilt recommendations after selection.                                                                                         | Lets signal quality influence execution parameters without bypassing risk controls.                           |
+| DeFi-native access                    | Execution is wallet-based and can connect to multiple Solana venues without centralized exchange account infrastructure.                                                                                       | Improves access, keeps custody outside centralized exchanges, and makes venue expansion configuration-driven. |
+| Venue adapter architecture            | Current showcase paths include Drift/Jupiter, with a normalized boundary for additional DeFi venue types such as dYdX-style perps or AMM-style venues such as PancakeSwap where compatible adapters are added. | Keeps venue expansion separate from strategy, risk, and operator-control logic.                               |
+| Custom protocol integration           | Low-level Solana paths derive PDAs, create ATAs idempotently, audit account ownership, and build transactions where venue abstractions are incomplete.                                                         | Keeps execution moving when SDK/API surfaces are limited or evolving.                                         |
+| Encrypted secrets operations          | Wallet and secrets tooling uses authenticated encryption, PBKDF2 key derivation, permission checks, masking, and secure loading.                                                                               | Makes operational security reviewable while keeping private values out of public source.                      |
+| Resilient runtime patterns            | Lazy dependency loading, optional client initialization, retry/error classification, order guards, RPC failover, stale-price handling, and staged rollout gates are built into the runtime.                    | Addresses common production failure modes in trading infrastructure.                                          |
+| Venue-aware execution                 | Opens and closes route through the correct venue/client, with venue metadata retained on positions.                                                                                                            | Reduces state mismatch when multiple Solana execution paths are available.                                    |
+| Staged live modes                     | Paper, guarded, shadow, limited-live, and live-oriented paths support progressive rollout.                                                                                                                     | Lets strategy and execution changes be validated before full live exposure.                                   |
+| Research/runtime parity               | Backtest runners and production modules share helper logic where practical.                                                                                                                                    | Reduces false confidence from research paths that diverge from live assumptions.                              |
+| Operational auditability              | Gate events, allocator decisions, trade lifecycle records, logs, and dashboards are all part of the product.                                                                                                   | Makes the engine reviewable and operable rather than opaque.                                                  |
 
 ## Functional Engineering Requirements
 
-| ID    | Requirement                    | Implementation Expectation                                                                                                                                     |
-| ----- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ER-0  | Network application boundaries | Runtime must keep Solana network access, venue execution, off-chain strategy logic, risk controls, and operator surfaces modular.                              |
-| ER-0A | DeFi custody boundary          | Live-oriented execution should use wallet-controlled Solana venue access and avoid centralized exchange account custody.                                       |
-| ER-1  | Strategy isolation             | Each strategy loads its own configuration and exposes a signal interface without mutating unrelated strategy state.                                            |
-| ER-2  | Multi-strategy runtime         | The runtime can evaluate multiple enabled strategies and pass candidate opportunities into a shared allocator.                                                 |
-| ER-3  | Market allocation              | The allocator scores candidates using confidence, risk, market constraints, and portfolio state before selecting trades.                                       |
-| ER-4  | Strategy-aware risk            | Risk calculations support different sizing, stop, take-profit, time-stop, and leverage rules by strategy type.                                                 |
-| ER-5  | Pre-trade validation           | Execution requests must pass slippage, market impact, funding, collateral, price freshness, network readiness, and duplicate-order checks before live routing. |
-| ER-6  | Venue-aware routing            | Open and close requests route through the correct execution client, and the opening venue is retained for close routing.                                       |
-| ER-7  | Operational persistence        | Trades, closes, order guards, diagnostics, market data, and runtime locks persist to SQLite-compatible storage.                                                |
-| ER-8  | Operator controls              | Runtime state can be inspected and controlled through dashboard/API/alert surfaces.                                                                            |
-| ER-9  | Research parity                | Backtest runners reuse shared helper logic and strategy modules where practical to reduce live/backtest drift.                                                 |
-| ER-10 | Sanitized public snapshot      | Public source includes reviewable architecture and representative production logic without private runtime values.                                             |
-| ER-11 | Network failure classification | RPC, stream, stale-price, transaction, and venue-state failures should be classified so the runtime can retry, degrade, or fail closed appropriately.          |
-| ER-12 | Execution-mode safety          | Paper, guarded, shadow, limited-live, and live-oriented modes must have explicit behavior and avoid accidental mode escalation.                                |
+| ID    | Requirement                    | Implementation Expectation                                                                                                                                                                                 |
+| ----- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ER-0  | Network application boundaries | Runtime must keep Solana network access, venue execution, off-chain strategy logic, risk controls, and operator surfaces modular.                                                                          |
+| ER-0A | DeFi custody boundary          | Live-oriented execution should use wallet-controlled Solana venue access and avoid centralized exchange account custody.                                                                                   |
+| ER-1  | Strategy isolation             | Each strategy loads its own configuration and exposes a signal interface without mutating unrelated strategy state.                                                                                        |
+| ER-2  | Multi-strategy runtime         | The runtime can evaluate multiple enabled strategies and pass candidate opportunities into a shared allocator.                                                                                             |
+| ER-3  | Dynamic market allocation      | The allocator scores candidates using strategy type, market tier, confidence, expected return, volatility, performance, correlation exposure, venue exposure, and portfolio state before selecting trades. |
+| ER-3A | Allocator risk recommendation  | Post-selection allocator quality can recommend size, leverage, and stop multipliers without bypassing risk manager approval.                                                                               |
+| ER-4  | Strategy-aware risk            | Risk calculations support different sizing, stop, take-profit, time-stop, and leverage rules by strategy type.                                                                                             |
+| ER-5  | Pre-trade validation           | Execution requests must pass slippage, market impact, funding, collateral, price freshness, network readiness, and duplicate-order checks before live routing.                                             |
+| ER-6  | Venue-aware routing            | Open and close requests route through the correct execution client, and the opening venue is retained for close routing.                                                                                   |
+| ER-7  | Operational persistence        | Trades, closes, order guards, diagnostics, market data, and runtime locks persist to SQLite-compatible storage.                                                                                            |
+| ER-8  | Operator controls              | Runtime state can be inspected and controlled through dashboard/API/alert surfaces.                                                                                                                        |
+| ER-9  | Research parity                | Backtest runners reuse shared helper logic and strategy modules where practical to reduce live/backtest drift.                                                                                             |
+| ER-10 | Sanitized public snapshot      | Public source includes reviewable architecture and representative production logic without private runtime values.                                                                                         |
+| ER-11 | Network failure classification | RPC, stream, stale-price, transaction, and venue-state failures should be classified so the runtime can retry, degrade, or fail closed appropriately.                                                      |
+| ER-12 | Execution-mode safety          | Paper, guarded, shadow, limited-live, and live-oriented modes must have explicit behavior and avoid accidental mode escalation.                                                                            |
+| ER-13 | Secure secret operations       | Wallets and sensitive credentials must support encrypted-at-rest storage, masking, permission checks, and secure loading paths.                                                                            |
+| ER-14 | Low-level protocol fallback    | Execution clients should support direct Solana account/PDA/ATA/transaction handling where higher-level venue APIs are incomplete or insufficient.                                                          |
 
 ## Non-Functional Engineering Requirements
 
@@ -146,17 +154,18 @@ flowchart TB
 
 ## Network Integration Requirements
 
-| Integration                  | Requirement                                                                                                                                 |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Solana RPC                   | Use configurable RPC paths, classify connection/transaction failures, and avoid hardcoding private endpoints.                               |
-| Price and oracle feeds       | Validate price freshness and provide source-specific fallback behavior where safe.                                                          |
-| DeFi venue clients           | Normalize open/close lifecycle results across Solana-based venues while preserving metadata required for close routing.                     |
-| Additional venue adapters    | Keep venue-specific protocol integrations behind normalized adapters so new DeFi venues can be added without rewriting strategy/risk logic. |
-| Wallet-controlled execution  | Require wallet configuration for live-oriented execution without requiring centralized exchange credentials.                                |
-| WebSocket streams            | Treat stream disconnects and stale updates as observable health events.                                                                     |
-| Transaction handling         | Support retry classification and avoid duplicate submissions through client/order guards.                                                   |
-| Margin and collateral checks | Validate available collateral, liquidation risk, leverage, and venue constraints before live-oriented execution.                            |
-| Operator APIs                | Expose health and control actions without coupling API handlers to strategy internals.                                                      |
+| Integration                       | Requirement                                                                                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Solana RPC                        | Use configurable RPC paths, classify connection/transaction failures, and avoid hardcoding private endpoints.                               |
+| Price and oracle feeds            | Validate price freshness and provide source-specific fallback behavior where safe.                                                          |
+| DeFi venue clients                | Normalize open/close lifecycle results across Solana-based venues while preserving metadata required for close routing.                     |
+| Additional venue adapters         | Keep venue-specific protocol integrations behind normalized adapters so new DeFi venues can be added without rewriting strategy/risk logic. |
+| Wallet-controlled execution       | Require wallet configuration for live-oriented execution without requiring centralized exchange credentials.                                |
+| Low-level Solana account handling | Derive PDAs, create ATAs idempotently, audit account ownership, and construct transactions when client/API abstractions are incomplete.     |
+| WebSocket streams                 | Treat stream disconnects and stale updates as observable health events.                                                                     |
+| Transaction handling              | Support retry classification and avoid duplicate submissions through client/order guards.                                                   |
+| Margin and collateral checks      | Validate available collateral, liquidation risk, leverage, and venue constraints before live-oriented execution.                            |
+| Operator APIs                     | Expose health and control actions without coupling API handlers to strategy internals.                                                      |
 
 ## Data And State Requirements
 
@@ -221,6 +230,8 @@ sequenceDiagram
 
 - Compute position size from strategy type, portfolio exposure, leverage settings, and market constraints.
 - Reject trades that exceed total exposure, per-market exposure, leverage limits, or position count.
+- Rank opportunities using strategy-specific scoring weights, market tiers, historical performance boosts, expected-return normalization, correlation exposure, venue capital pools, and cooldown state.
+- Produce allocator-driven risk recommendations after selection where enabled, while keeping final approval in the risk manager.
 - Preserve strategy-specific exit behavior while supporting global safety exits.
 
 ### Execution
@@ -230,6 +241,15 @@ sequenceDiagram
 - Support paper, guarded, shadow, limited-live, and live-oriented execution flows.
 - Classify execution errors so retryable, fatal, and state-sync failures are handled differently.
 - Fail closed when network state, price freshness, collateral, or duplicate-order checks are unsafe.
+- Support low-level Solana account and transaction paths for venue/API gaps.
+
+### Security And Secrets
+
+- Encrypt wallet and secrets files with authenticated encryption and password-derived keys.
+- Validate wallet file permissions before production-oriented loading.
+- Mask sensitive values in operator tooling.
+- Avoid logging private key bytes or passing secret material through IPC.
+- Keep public env templates structural only, with private values excluded.
 
 ### Operations
 
@@ -246,17 +266,19 @@ sequenceDiagram
 
 ## Interface Requirements
 
-| Interface                  | Direction    | Requirement                                                                                      |
-| -------------------------- | ------------ | ------------------------------------------------------------------------------------------------ |
-| Environment config         | Input        | Public templates must show field structure only; real values must remain private.                |
-| Market data providers      | Input        | Runtime must tolerate source-specific failure and use configured fallback behavior.              |
-| Solana RPC                 | Input/Output | Runtime must read network state and submit transactions through configurable, private endpoints. |
-| Oracle and WebSocket feeds | Input        | Runtime must validate freshness and disconnect state before using data for trading decisions.    |
-| Strategy factory           | Internal     | Strategy creation must be driven by enabled strategy configuration.                              |
-| Risk manager               | Internal     | Must return explicit approvals/rejections and sizing metadata.                                   |
-| Venue executor             | Output       | Must normalize open/close behavior across venue clients.                                         |
-| SQLite store               | Internal     | Must preserve trade lifecycle, diagnostics, and runtime state.                                   |
-| Dashboard/API              | Output/Input | Must expose status and accept operator control commands where enabled.                           |
+| Interface                  | Direction    | Requirement                                                                                          |
+| -------------------------- | ------------ | ---------------------------------------------------------------------------------------------------- |
+| Environment config         | Input        | Public templates must show field structure only; real values must remain private.                    |
+| Market data providers      | Input        | Runtime must tolerate source-specific failure and use configured fallback behavior.                  |
+| Solana RPC                 | Input/Output | Runtime must read network state and submit transactions through configurable, private endpoints.     |
+| Oracle and WebSocket feeds | Input        | Runtime must validate freshness and disconnect state before using data for trading decisions.        |
+| Strategy factory           | Internal     | Strategy creation must be driven by enabled strategy configuration.                                  |
+| Risk manager               | Internal     | Must return explicit approvals/rejections and sizing metadata.                                       |
+| Market allocator           | Internal     | Must produce explainable strategy/market-aware opportunity scores and optional risk recommendations. |
+| Venue executor             | Output       | Must normalize open/close behavior across venue clients.                                             |
+| Secrets manager            | Input/Output | Must encrypt/decrypt private runtime material locally without exposing values in public source.      |
+| SQLite store               | Internal     | Must preserve trade lifecycle, diagnostics, and runtime state.                                       |
+| Dashboard/API              | Output/Input | Must expose status and accept operator control commands where enabled.                               |
 
 ## Acceptance Criteria
 
@@ -270,12 +292,14 @@ sequenceDiagram
 
 ## Engineering Risks And Mitigations
 
-| Risk                              | Mitigation                                                                                                |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Strategy configuration bleed      | Use strategy-specific env loading and explicit strategy factory boundaries.                               |
-| Live/backtest divergence          | Share strategy and helper modules where practical and keep backtest assumptions visible.                  |
-| Duplicate or conflicting orders   | Use order guards, client order IDs, and persisted lifecycle state.                                        |
-| Venue state mismatch              | Store venue metadata on open positions and route closes through the original venue.                       |
-| Network or price-feed degradation | Classify RPC/stream failures, validate price freshness, and fail closed when execution context is unsafe. |
-| Secret exposure in showcase       | Use sanitized templates, exclude runtime files, and audit generated files for assigned values.            |
-| Overloaded root structure         | Keep root for core files and group source, docs, config, tests, scripts, and tools in subdirectories.     |
+| Risk                                 | Mitigation                                                                                                |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Strategy configuration bleed         | Use strategy-specific env loading and explicit strategy factory boundaries.                               |
+| Live/backtest divergence             | Share strategy and helper modules where practical and keep backtest assumptions visible.                  |
+| Duplicate or conflicting orders      | Use order guards, client order IDs, and persisted lifecycle state.                                        |
+| Venue state mismatch                 | Store venue metadata on open positions and route closes through the original venue.                       |
+| Network or price-feed degradation    | Classify RPC/stream failures, validate price freshness, and fail closed when execution context is unsafe. |
+| Incomplete or changing protocol APIs | Keep low-level Solana account/PDA/ATA/transaction paths available behind execution boundaries.            |
+| Weak operational secret handling     | Use encrypted secrets/wallet storage, permission checks, masking, and secret-free public templates.       |
+| Secret exposure in showcase          | Use sanitized templates, exclude runtime files, and audit generated files for assigned values.            |
+| Overloaded root structure            | Keep root for core files and group source, docs, config, tests, scripts, and tools in subdirectories.     |

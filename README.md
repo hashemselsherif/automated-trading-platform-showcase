@@ -19,7 +19,7 @@ The engine uses a DeFi-native execution model: trades are routed through Solana-
 - DeFi-native, wallet-based execution without centralized exchange account requirements
 - Multi-venue access through Solana-based perpetuals infrastructure and venue-aware routing, with an adapter pattern for broader DeFi venue expansion
 - Multi-strategy signal generation across momentum, breakout, mean-reversion, and event-driven styles
-- Opportunity ranking and market selection across multiple assets in the same trading loop
+- Dynamic market allocator that is both strategy-aware and market-aware, with correlation, venue, historical performance, exposure, cooldown, and risk-adjusted scoring inputs
 - Strategy-aware risk sizing, stop logic, leverage controls, and portfolio-level exposure checks
 - Pre-trade validation for slippage, market impact, funding conditions, and execution-mode gating
 - Venue-aware execution routing, trade tracking, live dashboards, alerts, and backtesting workflows
@@ -31,6 +31,7 @@ The engine uses a DeFi-native execution model: trades are routed through Solana-
 - Execution: non-custodial Solana/DeFi execution clients with venue-aware routing, guarded execution, shadow mode, and limited-live controls
 - Operations: API/WebSocket server, terminal dashboard, Telegram-style controls, structured logs, and trade journaling
 - Research: strategy-specific backtest runners, allocator diagnostics, and targeted tests
+- Security: encrypted secrets and wallet tooling using authenticated encryption, key derivation, file-permission checks, masked displays, and no secret-byte logging
 - Reliability: 60+ automated tests plus a large set of targeted validation scripts
 - Scope: source-code showcase only; private environment files, wallets, logs, databases, and result dumps are intentionally excluded
 
@@ -163,8 +164,12 @@ flowchart TD
 ## Implementation Themes
 
 - Signal generation is multi-factor and position-aware rather than trigger-only. Entry logic combines trend, momentum, volatility, volume, cooldown, and higher-timeframe context.
-- Risk management is strategy-aware. Different strategies carry different stop, take-profit, holding-period, and sizing rules.
+- Allocation is dynamic, not round-robin. The allocator scores opportunities by strategy type, market tier, recent performance, expected return, volatility, correlation exposure, venue capital pool, and cooldown state before selecting trades.
+- Risk management is strategy-aware. Different strategies carry different stop, take-profit, holding-period, sizing, leverage, and allocator-driven risk recommendation rules.
 - Execution is not a single client call. The platform routes by market and venue state, applies retries, and blocks trades when validation or collateral conditions fail.
+- Protocol integration includes low-level Solana work, including PDA derivation, idempotent associated-token-account setup, account ownership auditing, transaction construction, and fallbacks for incomplete or evolving venue API surfaces.
+- Runtime resilience patterns include lazy-loaded dependencies, optional client initialization, retry/error classification, idempotent order guards, RPC failover, stale-price handling, shadow mode, and limited-live rollout gates.
+- Secrets are treated as first-class operational infrastructure. The showcase includes encrypted wallet/secrets tooling and secure wallet loading patterns while excluding actual private values.
 - Operations are first-class. The trading engine exposes live monitoring, manual control actions, and backtesting tools alongside production logic.
 
 ## Public Showcase Scope
