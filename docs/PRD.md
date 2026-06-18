@@ -2,21 +2,23 @@
 
 ## Product Summary
 
-The Solana Network Trading Engine is a production-grade network application for automated financial trading across Solana-based perpetuals venues, market-data feeds, and operational control surfaces. It is not a single-market strategy script. It is a multi-market orchestration layer that runs multiple quantitative strategies in parallel, evaluates opportunities in real time, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and exposes dashboards, alerts, logs, and backtesting workflows for monitoring and iteration.
+The Solana Network Trading Engine is a production-grade DeFi network application for automated financial trading across Solana-based perpetuals venues, market-data feeds, and operational control surfaces. It is not a single-market strategy script. It is a multi-market orchestration layer that runs multiple quantitative strategies in parallel, evaluates opportunities in real time, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and exposes dashboards, alerts, logs, and backtesting workflows for monitoring and iteration.
 
 This showcase repository contains a sanitized source-code snapshot intended for technical review. It excludes private environment files, wallet material, runtime databases, logs, caches, and generated result dumps.
 
 ## Product Positioning
 
 - **Application type:** Solana network application for financial-trading automation, research, execution, and monitoring.
+- **DeFi model:** Wallet-based, non-custodial execution through Solana-based venues; no centralized exchange account is required for execution. Current showcase integrations focus on Solana DeFi venues such as Drift and Jupiter, with an adapter boundary that can support additional DeFi venue types such as dYdX-style perpetuals or AMM-style venues such as PancakeSwap where compatible adapters are added.
 - **Market scope:** Multi-market and multi-strategy; the runtime can evaluate different assets and strategy families in the same loop.
 - **Network scope:** Integrates Solana transaction clients, perpetuals venue clients, oracle/price infrastructure, WebSocket streams, RPC-backed state reads, and operator-facing APIs.
 - **Product value:** Gives an operator and strategy researcher one controlled environment for signal generation, opportunity ranking, risk gating, execution routing, monitoring, and post-trade review.
-- **Primary innovation:** Combines strategy orchestration, portfolio-aware allocation, venue-aware execution, staged live modes, and research parity in one runtime instead of separating them into disconnected scripts.
+- **Primary innovation:** Combines DeFi-native venue access, strategy orchestration, portfolio-aware allocation, venue-aware execution, staged live modes, and research parity in one runtime instead of separating them into disconnected scripts.
 
 ## Goals
 
 - Operate as a Solana network application with explicit boundaries between market-data ingestion, strategy evaluation, risk controls, execution clients, persistence, and operator surfaces.
+- Use the advantages of DeFi infrastructure: wallet-controlled access, transparent on-chain settlement, permissionless venue connectivity, and multi-venue routing without centralized exchange custody.
 - Run multiple strategy families in the same runtime without configuration bleed between strategies.
 - Evaluate signals across markets, rank opportunities, and select trades under portfolio constraints.
 - Apply risk controls before and after execution, including sizing, leverage bounds, stop logic, exposure limits, and duplicate-order protection.
@@ -28,6 +30,7 @@ This showcase repository contains a sanitized source-code snapshot intended for 
 ## Non-Goals
 
 - This showcase repository is not intended to be run as a live trading engine without private configuration, wallets, RPC endpoints, and deployment secrets.
+- Live DeFi execution still requires a funded compatible wallet and private runtime configuration even though it does not require a centralized exchange account.
 - The public repository does not include proprietary local datasets, generated analysis outputs, or private leader-wallet configuration.
 - The system does not guarantee trading profitability. It is an engineering platform for automated trading research, execution, and monitoring.
 
@@ -79,6 +82,20 @@ Needs:
 - Data model and architecture diagrams
 
 ## Core Capabilities
+
+### DeFi Execution Model
+
+The product is designed around wallet-based DeFi access rather than centralized exchange account infrastructure. Execution is controlled by the operator's wallet configuration and routed through Solana-based venues, allowing the same runtime to access multiple venues while keeping strategy, risk, and execution controls under one application boundary.
+
+DeFi-specific product advantages include:
+
+- Non-custodial execution from wallet-controlled infrastructure
+- No centralized exchange account requirement for on-chain execution
+- Multiple venue access from one strategy and risk runtime
+- Current Solana venue paths such as Drift and Jupiter, plus an adapter pattern for additional DeFi venues
+- Permissionless market connectivity where venue support exists
+- Transparent on-chain transaction lifecycle and settlement context
+- Faster strategy iteration because market access is configuration-driven rather than account-integration driven
 
 ### Solana Network Application Layer
 
@@ -191,6 +208,7 @@ Primary paths:
 | ID    | Requirement                                        | Acceptance Criteria                                                                                                                        |
 | ----- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | FR-0  | Operate as a Solana network application            | Runtime separates off-chain decisioning from Solana network access, transaction routing, venue clients, price feeds, and operator surfaces |
+| FR-0A | Support DeFi-native execution                      | Runtime can operate through wallet-controlled Solana venue clients without requiring centralized exchange account custody                  |
 | FR-1  | Load strategy configuration by strategy and market | Strategy config does not bleed across unrelated strategy variants                                                                          |
 | FR-2  | Generate signals from multiple strategies          | Runtime can evaluate each enabled strategy and return open/close/hold decisions                                                            |
 | FR-3  | Rank candidate trades                              | Allocator scores candidates and selects best opportunities under constraints                                                               |

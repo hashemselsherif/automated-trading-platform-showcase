@@ -2,7 +2,7 @@
 
 ## Engineering Summary
 
-The Solana Network Trading Engine is an event-driven network application that combines off-chain strategy decisioning with Solana-facing market data, venue routing, transaction execution, and operator controls. It evaluates multiple strategy engines, ranks opportunities across markets, applies portfolio-aware risk controls, routes execution across venue-specific clients, and exposes operational monitoring for live supervision and research iteration.
+The Solana Network Trading Engine is an event-driven DeFi network application that combines off-chain strategy decisioning with Solana-facing market data, venue routing, transaction execution, and operator controls. It evaluates multiple strategy engines, ranks opportunities across markets, applies portfolio-aware risk controls, routes execution across venue-specific clients, and exposes operational monitoring for live supervision and research iteration.
 
 This document describes the engineering design, runtime boundaries, network/application integrations, major modules, non-functional requirements, and acceptance criteria for the public showcase snapshot.
 
@@ -11,6 +11,7 @@ The system should be evaluated as a multi-market Solana network application, not
 ## Engineering Goals
 
 - Establish clear boundaries between Solana network access, venue clients, strategy evaluation, portfolio/risk controls, persistence, and operator surfaces.
+- Preserve a DeFi-native execution boundary where wallet-controlled Solana access replaces centralized exchange account custody.
 - Keep strategy logic modular so multiple strategy families can run in the same process without configuration bleed.
 - Separate signal generation, allocation, risk management, execution routing, persistence, and operator controls.
 - Make trading decisions auditable through structured logs, database records, gate diagnostics, allocator decisions, and tests.
@@ -41,15 +42,15 @@ flowchart LR
 
 ## Application And Network Boundaries
 
-| Layer                     | Responsibility                                                                           | Engineering Notes                                                                                                   |
-| ------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Operator layer            | Dashboards, API/WebSocket status, Telegram-style controls, terminal control panel        | Human actions must be authenticated, logged, and kept separate from strategy decision logic.                        |
-| Strategy layer            | Signal generation, entry/exit logic, diagnostics                                         | Strategy modules should produce explicit decisions and diagnostic context without directly submitting transactions. |
-| Allocation/risk layer     | Opportunity ranking, position sizing, exposure checks, stop logic, leverage controls     | This layer owns portfolio constraints and must reject invalid opportunities before execution.                       |
-| Network integration layer | RPC access, price/oracle feeds, venue market state, WebSocket streams                    | Network state should be normalized before it influences strategy or execution decisions.                            |
-| Execution layer           | Venue-specific open/close routing, transaction submission, retries, error classification | Execution clients should hide venue differences behind normalized lifecycle results.                                |
-| Persistence layer         | Trade lifecycle, diagnostics, order guards, runtime locks, cached market state           | Persistence supports auditability, duplicate-order prevention, and operator visibility.                             |
-| Research layer            | Backtests, strategy sweeps, execution simulations, deterministic tests                   | Research tooling should reuse production strategy/risk logic where practical to reduce drift.                       |
+| Layer                     | Responsibility                                                                                       | Engineering Notes                                                                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Operator layer            | Dashboards, API/WebSocket status, Telegram-style controls, terminal control panel                    | Human actions must be authenticated, logged, and kept separate from strategy decision logic.                                        |
+| Strategy layer            | Signal generation, entry/exit logic, diagnostics                                                     | Strategy modules should produce explicit decisions and diagnostic context without directly submitting transactions.                 |
+| Allocation/risk layer     | Opportunity ranking, position sizing, exposure checks, stop logic, leverage controls                 | This layer owns portfolio constraints and must reject invalid opportunities before execution.                                       |
+| Network integration layer | RPC access, price/oracle feeds, venue market state, WebSocket streams                                | Network state should be normalized before it influences strategy or execution decisions.                                            |
+| DeFi execution layer      | Wallet-based venue access, open/close routing, transaction submission, retries, error classification | Execution clients should hide venue differences behind normalized lifecycle results without requiring centralized exchange custody. |
+| Persistence layer         | Trade lifecycle, diagnostics, order guards, runtime locks, cached market state                       | Persistence supports auditability, duplicate-order prevention, and operator visibility.                                             |
+| Research layer            | Backtests, strategy sweeps, execution simulations, deterministic tests                               | Research tooling should reuse production strategy/risk logic where practical to reduce drift.                                       |
 
 ## Runtime Architecture
 
@@ -88,33 +89,36 @@ flowchart TB
 
 ## Repository Boundaries
 
-| Area                  | Responsibility                                                                                             | Primary Paths                                                                                                                         |
-| --------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Runtime orchestration | Process startup, strategy loading, loop control, signal evaluation, position lifecycle                     | `bot.js`, `config.js`, `src/core/validate-config.js`                                                                                  |
-| Strategies            | Independent signal engines and entry/exit logic                                                            | `src/strategies/`                                                                                                                     |
-| Allocation and risk   | Opportunity ranking, position sizing, exposure controls, leverage selection                                | `risk-manager.js`, `utils/market-allocator.js`, `utils/portfolio-risk.js`, `utils/dynamic-leverage.js`                                |
-| Network and execution | RPC management, oracle/price feeds, venue-specific order routing, guarded execution, Drift/Jupiter clients | `src/execution/`, `drift-subprocess/`, `utils/rpc-manager.js`, `utils/pyth-websocket-client.js`, `utils/improved-multi-price-feed.js` |
-| Operations            | API server, dashboards, Telegram-style controls, logs, journaling                                          | `src/operations/`, `src/core/logger.js`, `src/core/journal.js`                                                                        |
-| Persistence           | Operational trade and diagnostics store                                                                    | `db.js`                                                                                                                               |
-| Research              | Backtest runners, backtest helper library, targeted tests                                                  | `scripts/backtest/`, `tests/`                                                                                                         |
-| Configuration         | Public market metadata and sanitized env templates                                                         | `config/`                                                                                                                             |
+| Area                  | Responsibility                                                                                                                                                     | Primary Paths                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Runtime orchestration | Process startup, strategy loading, loop control, signal evaluation, position lifecycle                                                                             | `bot.js`, `config.js`, `src/core/validate-config.js`                                                                                  |
+| Strategies            | Independent signal engines and entry/exit logic                                                                                                                    | `src/strategies/`                                                                                                                     |
+| Allocation and risk   | Opportunity ranking, position sizing, exposure controls, leverage selection                                                                                        | `risk-manager.js`, `utils/market-allocator.js`, `utils/portfolio-risk.js`, `utils/dynamic-leverage.js`                                |
+| Network and execution | RPC management, oracle/price feeds, venue-specific order routing, guarded execution, Drift/Jupiter clients, and adapter boundaries for additional DeFi venue types | `src/execution/`, `drift-subprocess/`, `utils/rpc-manager.js`, `utils/pyth-websocket-client.js`, `utils/improved-multi-price-feed.js` |
+| Operations            | API server, dashboards, Telegram-style controls, logs, journaling                                                                                                  | `src/operations/`, `src/core/logger.js`, `src/core/journal.js`                                                                        |
+| Persistence           | Operational trade and diagnostics store                                                                                                                            | `db.js`                                                                                                                               |
+| Research              | Backtest runners, backtest helper library, targeted tests                                                                                                          | `scripts/backtest/`, `tests/`                                                                                                         |
+| Configuration         | Public market metadata and sanitized env templates                                                                                                                 | `config/`                                                                                                                             |
 
 ## Technical Innovations
 
-| Innovation Area            | Description                                                                                                                  | Why It Matters                                                                          |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Strategy-isolated runtime  | Multiple strategy families run in one process while preserving strategy-specific configuration, parameters, and diagnostics. | Prevents config bleed and makes the engine extensible without duplicating runtime code. |
-| Portfolio-aware allocation | Candidate signals are ranked against portfolio state, market constraints, confidence, and capacity before risk sizing.       | Avoids treating each market signal independently when capital and exposure are shared.  |
-| Venue-aware execution      | Opens and closes route through the correct venue/client, with venue metadata retained on positions.                          | Reduces state mismatch when multiple Solana execution paths are available.              |
-| Staged live modes          | Paper, guarded, shadow, limited-live, and live-oriented paths support progressive rollout.                                   | Lets strategy and execution changes be validated before full live exposure.             |
-| Research/runtime parity    | Backtest runners and production modules share helper logic where practical.                                                  | Reduces false confidence from research paths that diverge from live assumptions.        |
-| Operational auditability   | Gate events, allocator decisions, trade lifecycle records, logs, and dashboards are all part of the product.                 | Makes the engine reviewable and operable rather than opaque.                            |
+| Innovation Area            | Description                                                                                                                                                                                                    | Why It Matters                                                                                                |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Strategy-isolated runtime  | Multiple strategy families run in one process while preserving strategy-specific configuration, parameters, and diagnostics.                                                                                   | Prevents config bleed and makes the engine extensible without duplicating runtime code.                       |
+| Portfolio-aware allocation | Candidate signals are ranked against portfolio state, market constraints, confidence, and capacity before risk sizing.                                                                                         | Avoids treating each market signal independently when capital and exposure are shared.                        |
+| DeFi-native access         | Execution is wallet-based and can connect to multiple Solana venues without centralized exchange account infrastructure.                                                                                       | Improves access, keeps custody outside centralized exchanges, and makes venue expansion configuration-driven. |
+| Venue adapter architecture | Current showcase paths include Drift/Jupiter, with a normalized boundary for additional DeFi venue types such as dYdX-style perps or AMM-style venues such as PancakeSwap where compatible adapters are added. | Keeps venue expansion separate from strategy, risk, and operator-control logic.                               |
+| Venue-aware execution      | Opens and closes route through the correct venue/client, with venue metadata retained on positions.                                                                                                            | Reduces state mismatch when multiple Solana execution paths are available.                                    |
+| Staged live modes          | Paper, guarded, shadow, limited-live, and live-oriented paths support progressive rollout.                                                                                                                     | Lets strategy and execution changes be validated before full live exposure.                                   |
+| Research/runtime parity    | Backtest runners and production modules share helper logic where practical.                                                                                                                                    | Reduces false confidence from research paths that diverge from live assumptions.                              |
+| Operational auditability   | Gate events, allocator decisions, trade lifecycle records, logs, and dashboards are all part of the product.                                                                                                   | Makes the engine reviewable and operable rather than opaque.                                                  |
 
 ## Functional Engineering Requirements
 
 | ID    | Requirement                    | Implementation Expectation                                                                                                                                     |
 | ----- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ER-0  | Network application boundaries | Runtime must keep Solana network access, venue execution, off-chain strategy logic, risk controls, and operator surfaces modular.                              |
+| ER-0A | DeFi custody boundary          | Live-oriented execution should use wallet-controlled Solana venue access and avoid centralized exchange account custody.                                       |
 | ER-1  | Strategy isolation             | Each strategy loads its own configuration and exposes a signal interface without mutating unrelated strategy state.                                            |
 | ER-2  | Multi-strategy runtime         | The runtime can evaluate multiple enabled strategies and pass candidate opportunities into a shared allocator.                                                 |
 | ER-3  | Market allocation              | The allocator scores candidates using confidence, risk, market constraints, and portfolio state before selecting trades.                                       |
@@ -142,15 +146,17 @@ flowchart TB
 
 ## Network Integration Requirements
 
-| Integration                  | Requirement                                                                                                      |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Solana RPC                   | Use configurable RPC paths, classify connection/transaction failures, and avoid hardcoding private endpoints.    |
-| Price and oracle feeds       | Validate price freshness and provide source-specific fallback behavior where safe.                               |
-| Venue clients                | Normalize open/close lifecycle results while preserving venue-specific metadata required for close routing.      |
-| WebSocket streams            | Treat stream disconnects and stale updates as observable health events.                                          |
-| Transaction handling         | Support retry classification and avoid duplicate submissions through client/order guards.                        |
-| Margin and collateral checks | Validate available collateral, liquidation risk, leverage, and venue constraints before live-oriented execution. |
-| Operator APIs                | Expose health and control actions without coupling API handlers to strategy internals.                           |
+| Integration                  | Requirement                                                                                                                                 |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Solana RPC                   | Use configurable RPC paths, classify connection/transaction failures, and avoid hardcoding private endpoints.                               |
+| Price and oracle feeds       | Validate price freshness and provide source-specific fallback behavior where safe.                                                          |
+| DeFi venue clients           | Normalize open/close lifecycle results across Solana-based venues while preserving metadata required for close routing.                     |
+| Additional venue adapters    | Keep venue-specific protocol integrations behind normalized adapters so new DeFi venues can be added without rewriting strategy/risk logic. |
+| Wallet-controlled execution  | Require wallet configuration for live-oriented execution without requiring centralized exchange credentials.                                |
+| WebSocket streams            | Treat stream disconnects and stale updates as observable health events.                                                                     |
+| Transaction handling         | Support retry classification and avoid duplicate submissions through client/order guards.                                                   |
+| Margin and collateral checks | Validate available collateral, liquidation risk, leverage, and venue constraints before live-oriented execution.                            |
+| Operator APIs                | Expose health and control actions without coupling API handlers to strategy internals.                                                      |
 
 ## Data And State Requirements
 

@@ -2,6 +2,8 @@
 
 This repository contains a sanitized production-source subset of a live Solana network application for automated financial trading. The trading engine runs multiple quantitative strategies in parallel, evaluates opportunities across markets, normalizes network and venue state, applies layered risk controls, routes execution through venue-specific clients, and streams operating status to dashboards and alerts.
 
+The engine uses a DeFi-native execution model: trades are routed through Solana-based venues from a wallet-controlled setup, so operation does not require a centralized exchange account or exchange custody. This keeps access permissionless, supports multiple venues from one runtime, and makes wallet, RPC, venue, and risk configuration the primary deployment inputs. Current showcase paths include Solana DeFi venues such as Drift and Jupiter, with an adapter-based structure that can extend to additional DeFi venue types such as dYdX-style perpetuals or AMM-style venues such as PancakeSwap where compatible adapters are added.
+
 ## Review First
 
 - [docs/PRD.md](./docs/PRD.md): product requirements, capabilities, user flows, risk controls, and success metrics.
@@ -14,6 +16,8 @@ This repository contains a sanitized production-source subset of a live Solana n
 
 ## System Capabilities
 
+- DeFi-native, wallet-based execution without centralized exchange account requirements
+- Multi-venue access through Solana-based perpetuals infrastructure and venue-aware routing, with an adapter pattern for broader DeFi venue expansion
 - Multi-strategy signal generation across momentum, breakout, mean-reversion, and event-driven styles
 - Opportunity ranking and market selection across multiple assets in the same trading loop
 - Strategy-aware risk sizing, stop logic, leverage controls, and portfolio-level exposure checks
@@ -24,7 +28,7 @@ This repository contains a sanitized production-source subset of a live Solana n
 
 - Runtime: Node.js trading loop with strategy loading, market updates, allocation, risk checks, execution, and telemetry
 - Data: SQLite operational store for trades, order guards, diagnostics, market data, instance locks, and copy-trading snapshots
-- Execution: Solana execution clients with venue-aware routing, guarded execution, shadow mode, and limited-live controls
+- Execution: non-custodial Solana/DeFi execution clients with venue-aware routing, guarded execution, shadow mode, and limited-live controls
 - Operations: API/WebSocket server, terminal dashboard, Telegram-style controls, structured logs, and trade journaling
 - Research: strategy-specific backtest runners, allocator diagnostics, and targeted tests
 - Reliability: 60+ automated tests plus a large set of targeted validation scripts
@@ -165,7 +169,7 @@ flowchart TD
 
 ## Public Showcase Scope
 
-This is a code-reviewable snapshot, not a turnkey deployment. Live trading requires private environment configuration, RPC endpoints, wallet material, and operational secrets that are deliberately not included.
+This is a code-reviewable snapshot, not a turnkey deployment. Live operation is wallet-based and does not require a centralized exchange account, but it still requires private environment configuration, RPC endpoints, funded wallet material, and operational secrets that are deliberately not included.
 
 ## License
 
