@@ -1,93 +1,462 @@
-$ ENV_FILE=.env.rsi-reversion node --max-old-space-size=8192 scripts/backtest/backtest-rsi-reversion.js --days=360 --interval=5m --symbols=JTO,XRP,HYPE,SUI,LINK,JUP,HNT,APT,PAXG,DOGE,RENDER,TAO,DRIFT,FARTCOIN,PYTH,WIF
+$ ENV_FILE=.env.rsi-reversion node --max-old-space-size=8192 scripts/backtest/backtest-rsi-reversion.js --days=360 --interval=5m --symbols=JTO,XRP,HYPE,SUI,LINK,JUP,HNT,APT,DOGE,RENDER,TAO,DRIFT,FARTCOIN,PYTH,WIF
 
-Running backtest for 16 market(s) with SHARED capital...
-Markets: JTO, XRP, HYPE, SUI, LINK, JUP, HNT, APT, PAXG, DOGE, RENDER, TAO, DRIFT, FARTCOIN, PYTH, WIF
-Interval: 5m
-Lookback: 360 days
-Tick model: 1m intrabar simulation
-Strategy: RSI mean reversion
+[FARTCOIN] ✓ Data validated: 103525/103679 candles (99.9%)
+[PYTH]     ✓ Data validated: 103525/103679 candles (99.9%)
+[WIF]      ✓ Data validated: 103525/103679 candles (99.9%)
+✓ 1m data validated during loading (released after tick cache build)
 
-BACKTEST SUMMARY
+[JTO] RSI: overbought=85→80, leverage=5x, hardStop=22%/ATR=0x, failure=0/100
+[JTO] Entry timing: maxBars=9, maxDeviation=2, atrPeriod=21
+[RSI-Reversion] Initialized for JTO-PERP
+[RSI-Reversion] Entry: oversold=13→18, overbought=85→80, maxDeviation=2
+[RSI-Reversion] Exit: target_long=50, target_short=35, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=22%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=15-100 (disabled) | Volatility=0.1-4%
+
+[XRP] RSI: overbought=85→78, leverage=1x, hardStop=20%/ATR=0x, failure=0/100
+[XRP] Entry timing: maxBars=10, maxDeviation=4, atrPeriod=21
+[RSI-Reversion] Initialized for XRP-PERP
+[RSI-Reversion] Entry: oversold=12→15, overbought=85→78, maxDeviation=4
+[RSI-Reversion] Exit: target_long=60, target_short=45, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=20%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=0-100 (disabled) | Volatility=0.1-7%
+
+[HYPE] RSI: overbought=81→77, leverage=1x, hardStop=20%/ATR=0x, failure=20/100
+[HYPE] Entry timing: maxBars=10, maxDeviation=2, atrPeriod=21
+[RSI-Reversion] Initialized for HYPE-PERP
+[RSI-Reversion] Entry: oversold=28→19, overbought=81→77, maxDeviation=2
+[RSI-Reversion] Exit: target_long=70, target_short=40, partial=10/90, failure=20/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=20%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=0-25 | Volatility=0-5%
+
+[SUI] RSI: overbought=81→76, leverage=1x, hardStop=10%/ATR=0x, failure=0/100
+[SUI] Entry timing: maxBars=6, maxDeviation=4, atrPeriod=21
+[RSI-Reversion] Initialized for SUI-PERP
+[RSI-Reversion] Entry: oversold=8→18, overbought=81→76, maxDeviation=4
+[RSI-Reversion] Exit: target_long=55, target_short=45, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=10%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=10-27 | Volatility=0.2-4%
+
+[LINK] RSI: overbought=79→76, leverage=1x, hardStop=10%/ATR=0x, failure=0/100
+[LINK] Entry timing: maxBars=2, maxDeviation=2, atrPeriod=21
+[RSI-Reversion] Initialized for LINK-PERP
+[RSI-Reversion] Entry: oversold=19→25, overbought=79→76, maxDeviation=2
+[RSI-Reversion] Exit: target_long=49, target_short=40, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=10%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=10-32 | Volatility=0.05-4%
+
+[JUP] RSI: overbought=85→83, leverage=1x, hardStop=20%/ATR=0x, failure=0/100
+[JUP] Entry timing: maxBars=2, maxDeviation=4, atrPeriod=21
+[RSI-Reversion] Initialized for JUP-PERP
+[RSI-Reversion] Entry: oversold=13→16, overbought=85→83, maxDeviation=4
+[RSI-Reversion] Exit: target_long=66, target_short=45, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=20%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=0-48 | Volatility=0.05-5%
+
+[APT] RSI: overbought=68→63, leverage=2x, hardStop=15%/ATR=0x, failure=22/100
+[APT] Entry timing: maxBars=2, maxDeviation=3, atrPeriod=21
+[RSI-Reversion] Initialized for APT-PERP
+[RSI-Reversion] Entry: oversold=24→34, overbought=68→63, maxDeviation=3
+[RSI-Reversion] Exit: target_long=58, target_short=50, partial=10/90, failure=22/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=15%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=5-20 | Volatility=0.15-5%
+
+[TAO] RSI: overbought=74→73, leverage=3x, hardStop=25%/ATR=0x, failure=0/100
+[TAO] Entry timing: maxBars=4, maxDeviation=8, atrPeriod=21
+[RSI-Reversion] Initialized for TAO-PERP
+[RSI-Reversion] Entry: oversold=27→32, overbought=74→73, maxDeviation=8
+[RSI-Reversion] Exit: target_long=55, target_short=45, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=25%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=0-15 | Volatility=0.05-4%
+
+[DRIFT] RSI: overbought=82→83, leverage=1x, hardStop=10%/ATR=0x, failure=0/80
+[DRIFT] Entry timing: maxBars=2, maxDeviation=7, atrPeriod=21
+[RSI-Reversion] Initialized for DRIFT-PERP
+[RSI-Reversion] Entry: oversold=33→36, overbought=82→83, maxDeviation=7
+[RSI-Reversion] Exit: target_long=50, target_short=45, partial=10/90, failure=0/80
+[RSI-Reversion] Hard Stop: enabled=true, percent=10%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=15-32 | Volatility=0.7-5%
+
+[FARTCOIN] RSI: overbought=86→80, leverage=1x, hardStop=10%/ATR=0x, failure=0/100
+[FARTCOIN] Entry timing: maxBars=3, maxDeviation=4, atrPeriod=21
+[RSI-Reversion] Initialized for FARTCOIN-PERP
+[RSI-Reversion] Entry: oversold=14→17, overbought=86→80, maxDeviation=4
+[RSI-Reversion] Exit: target_long=54, target_short=46, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=10%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=20-60 | Volatility=0.1-5%
+
+[PYTH] RSI: overbought=79→79, leverage=1x, hardStop=15%/ATR=0x, failure=0/100
+[PYTH] Entry timing: maxBars=7, maxDeviation=4, atrPeriod=21
+[RSI-Reversion] Initialized for PYTH-PERP
+[RSI-Reversion] Entry: oversold=19→27, overbought=79→79, maxDeviation=4
+[RSI-Reversion] Exit: target_long=58, target_short=35, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=15%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=20-25 | Volatility=0.15-5%
+
+[WIF] RSI: overbought=80→77, leverage=3x, hardStop=15%/ATR=0x, failure=0/100
+[WIF] Entry timing: maxBars=2, maxDeviation=2, atrPeriod=21
+[RSI-Reversion] Initialized for WIF-PERP
+[RSI-Reversion] Entry: oversold=12→15, overbought=80→77, maxDeviation=2
+[RSI-Reversion] Exit: target_long=50, target_short=50, partial=10/90, failure=0/100
+[RSI-Reversion] Hard Stop: enabled=true, percent=15%, ATR=0x
+[RSI-Reversion] Trailing Stop: enabled=true, percent=10%, ATR=0x, activation=0%
+[RSI-Reversion] Filters: ADX(period=14)=20-35 | Volatility=0.3-4%
+
+📊 Multi-Market Shared Capital Simulation
+   Markets: JTO, XRP, HYPE, SUI, LINK, JUP, HNT, APT, DOGE, RENDER, TAO, DRIFT, FARTCOIN, PYTH, WIF
+   Timeline: 103680 unified timestamps
+   Tick Simulation: 20 ticks/candle
+   Entry Timing: BAR OPEN (RSI from previous bar, entry at open - no look-ahead)
+   Initial Capital: $1000 (SHARED across all markets)
+   Sizing Method: volatility-scaled (target 1.5% ATR)
+   Leverage: 1x
+   Max Positions: 10 (across all markets)
+
+================================================================================
+                    PER-MARKET RESULTS
+================================================================================
+
+📊 JTO
+----------------------------------------
+  Trades: 178 | Win Rate: 88.8%
+  Net P&L: $+7891.92 (+789.2%)
+  Ending Equity: $9002.34
+  Longs: 75 ($703.31) | Shorts: 103 ($7416.64)
+
+📊 XRP
+----------------------------------------
+  Trades: 245 | Win Rate: 81.2%
+  Net P&L: $-786.89 (-78.7%)
+  Ending Equity: $9002.34
+  Longs: 72 ($-1985.45) | Shorts: 173 ($1187.46)
+
+📊 HYPE
+----------------------------------------
+  Trades: 282 | Win Rate: 51.1%
+  Net P&L: $+455.50 (+45.6%)
+  Ending Equity: $9002.34
+  Longs: 216 ($200.45) | Shorts: 66 ($346.78)
+
+📊 SUI
+----------------------------------------
+  Trades: 93 | Win Rate: 91.4%
+  Net P&L: $+722.66 (+72.2%)
+  Ending Equity: $9002.34
+  Longs: 6 ($82.01) | Shorts: 87 ($664.65)
+
+📊 LINK
+----------------------------------------
+  Trades: 223 | Win Rate: 87.9%
+  Net P&L: $-1236.74 (-123.7%)
+  Ending Equity: $9002.34
+  Longs: 98 ($-1415.67) | Shorts: 125 ($242.12)
+
+📊 JUP
+----------------------------------------
+  Trades: 186 | Win Rate: 86.6%
+  Net P&L: $-88.32 (-8.8%)
+  Ending Equity: $9002.34
+  Longs: 75 ($985.66) | Shorts: 111 ($-1034.83)
+
+📊 APT
+----------------------------------------
+  Trades: 375 | Win Rate: 87.7%
+  Net P&L: $-461.99 (-46.2%)
+  Ending Equity: $9002.34
+  Longs: 69 ($-475.62) | Shorts: 306 ($192.38)
+
+📊 RENDER
+----------------------------------------
+  Trades: 121 | Win Rate: 88.4%
+  Net P&L: $+850.28 (+85.0%)
+  Ending Equity: $9002.34
+  Longs: 31 ($1128.60) | Shorts: 90 ($-208.25)
+
+📊 TAO
+----------------------------------------
+  Trades: 127 | Win Rate: 93.7%
+  Net P&L: $+1692.39 (+169.2%)
+  Ending Equity: $9002.34
+  Longs: 79 ($214.17) | Shorts: 48 ($1561.52)
+
+📊 DRIFT
+----------------------------------------
+  Trades: 127 | Win Rate: 83.5%
+  Net P&L: $-848.24 (-84.8%)
+  Ending Equity: $9002.34
+  Longs: 125 ($-799.95) | Shorts: 2 ($-14.96)
+
+📊 FARTCOIN
+----------------------------------------
+  Trades: 145 | Win Rate: 86.9%
+  Net P&L: $-886.44 (-88.6%)
+  Ending Equity: $9002.34
+  Longs: 71 ($-232.29) | Shorts: 74 ($-604.86)
+
+📊 PYTH
+----------------------------------------
+  Trades: 183 | Win Rate: 90.2%
+  Net P&L: $+1575.26 (+157.5%)
+  Ending Equity: $9002.34
+  Longs: 97 ($811.63) | Shorts: 86 ($830.10)
+
+📊 WIF
+----------------------------------------
+  Trades: 77 | Win Rate: 85.7%
+  Net P&L: $-73.24 (-7.3%)
+  Ending Equity: $9002.34
+  Longs: 8 ($230.75) | Shorts: 69 ($-266.39)
+
+════════════════════════════════════════════════════════════════════════════════
+                       📊 PORTFOLIO PERFORMANCE SUMMARY
+════════════════════════════════════════════════════════════════════════════════
+
+  Markets:           JTO, XRP, HYPE, SUI, LINK, JUP, HNT, APT, DOGE, RENDER, TAO, DRIFT, FARTCOIN, PYTH, WIF (15 markets)
+  Period:            360 days
+  Initial Capital:   $1,000 (SHARED across all markets)
+  Final Equity:      $9,002.34
+
+  💰 TOTAL RETURN:   +800.1% ($+8000.77)
+  📅 Monthly Est:    +66.7%
+  📈 Annualized:     +811%
+
+  Total Trades:      2529
+  Win Rate:          82.5%
+  Avg P&L/Trade:     $3.16 (0.316%)
+  Expectancy:        $3.55 (0.36%)
+  Payoff Ratio:      0.27
+  Kelly %:           18.1%
+  Win Streak:        53 | Lose Streak: 7
+  PnL Skewness:      -9.19 (negative tail ⚠️)
+
+  🎯 Robust Score:   -0.81
+  ⚠️  DISQUALIFIED:  maxDrawdown 50.50% > 20%
+     (SQN-driven composite with Sharpe, RF, DD, PF, sample confidence, tail-risk penalties)
+  Circuit Breaker:   18 triggers, 0 entries skipped, 18 activations, 18 expirations (max 3 losses, 3min cooldown)
+
+📊 ALLOCATOR STATS
 --------------------------------------------------
-  Total Trades:        2533
-  Winners:             2132
-  Losers:              401
-  Win Rate:            84.17%
-  Total P&L:           $138671.30
-  Total Fees:          $13183.84
-  Max Drawdown:        16.99%
-  Sharpe:              11.32
-  Sortino:             14.10
-  Profit Factor:       5.30
-  SQN:                 9.63
-  SQN Rating:          Holy Grail
+  Signals Generated:   2638
+  Signals Accepted:    2529 (95.9%)
+  Signals Rejected:    0 (outranked by higher-scoring signals)
+  Concurrent Ticks:    113 ticks with >1 signal competing
+  Max Concurrent:      4 signals at once
+  Concurrent Hist:     2→103x, 3→8x, 4→2x
+  Per-Market:
+    HYPE-PERP:     290 gen, 282 accept (97%), 0 reject, 0 CB
+    JUP-PERP:      199 gen, 186 accept (93%), 0 reject, 0 CB
+    APT-PERP:      385 gen, 375 accept (97%), 0 reject, 0 CB
+    PYTH-PERP:     188 gen, 183 accept (97%), 0 reject, 0 CB
+    LINK-PERP:     228 gen, 223 accept (98%), 0 reject, 0 CB
+    XRP-PERP:      258 gen, 245 accept (95%), 0 reject, 0 CB
+    RENDER-PERP:   130 gen, 121 accept (93%), 0 reject, 0 CB
+    FARTCOIN-PERP: 149 gen, 145 accept (97%), 0 reject, 0 CB
+    DRIFT-PERP:    130 gen, 127 accept (98%), 0 reject, 0 CB
+    JTO-PERP:      193 gen, 178 accept (92%), 0 reject, 0 CB
+    TAO-PERP:      131 gen, 127 accept (97%), 0 reject, 0 CB
+    SUI-PERP:      109 gen,  93 accept (85%), 0 reject, 0 CB
+    WIF-PERP:       77 gen,  77 accept (100%), 0 reject, 0 CB
+    DOGE-PERP:      88 gen,  87 accept (99%), 0 reject, 0 CB
+    HNT-PERP:       82 gen,  80 accept (98%), 0 reject, 0 CB
 
-ALLOCATOR STATS
---------------------------------------------------
-  Signals Generated:   2574
-  Signals Accepted:    2533
-  Signals Rejected:    0
-  Blocked by Capacity: 0
-  Blocked by CB:       0
-  Acceptance Rate:     98.4%
-  Max Concurrent Sig:  4
+💰 COMPREHENSIVE COST BREAKDOWN
+════════════════════════════════════════════════════════════
 
-MARKET RESULTS
---------------------------------------------------
-  JTO        trades=183  pnl=$41880.41   fees=$3201.69
-  TAO        trades=138  pnl=$16530.58   fees=$1795.47
-  APT        trades=345  pnl=$11380.25   fees=$1032.32
-  WIF        trades=76   pnl=$11260.47   fees=$340.07
-  JUP        trades=164  pnl=$7861.04    fees=$407.89
-  PYTH       trades=175  pnl=$7550.78    fees=$721.41
-  DRIFT      trades=111  pnl=$7100.35    fees=$407.39
-  RENDER     trades=117  pnl=$7070.19    fees=$443.42
-  XRP        trades=201  pnl=$5884.68    fees=$1501.65
-  FARTCOIN   trades=87   pnl=$5496.47    fees=$336.01
-  LINK       trades=218  pnl=$4545.22    fees=$1121.83
-  SUI        trades=99   pnl=$3190.80    fees=$26.31
-  HNT        trades=97   pnl=$3078.01    fees=$371.43
-  PAXG       trades=85   pnl=$2858.35    fees=$282.81
-  HYPE       trades=283  pnl=$2127.27    fees=$868.72
-  DOGE       trades=154  pnl=$856.46     fees=$325.43
+┌─ FEE MODEL CONFIGURATION
+│  Model:               DRIFT
+│  Execution Mode:      maker (rookie tier)
+│  Open Fee:            -0.25 bps (rebate)
+│  Close Fee:           maker/taker based on realized exit mode
+│
+├─ TRADING FEES
+│  Open Fees:           $929.10  (maker rebates + taker fallbacks)
+│  Close Fees:          $2011.77 (maker exits + taker exits)
+│  ─────────────────────
+│  Subtotal:            $2940.87
+│
+├─ EXECUTION COSTS
+│  Price Impact:        $0.00  (limit orders, no AMM impact)
+│  Swap Fees:           $0.00  (USDC margin, no swap needed)
+│  Slippage:            $1273.73 (limit offsets + taker fallback/stops)
+│    ├─ Implied:        0.62 bps (slippageUsd / fillNotional)
+│    ├─ Entry Slippage: $440.15  (0.43 bps on entry notional)
+│    └─ Exit Slippage:  $833.58  (0.81 bps on exit notional)
+│
+├─ CARRY COSTS
+│  Funding Paid:        $141.87 (estimated average)
+│  Borrow Fees:         N/A (Drift uses funding, not borrow)
+│
+├─ NETWORK COSTS
+│  Solana TX Fees:      $121.39 (~$0.0240/tx × 5058 txs)
+│  Priority Fees:       Included (100000 lamports)
+│
+├─ MARGIN & LIQUIDATION
+│  Maintenance Margin:  5%
+│  Liquidations:        0 ✅
+│  All stops triggered before margin breach
+│
+└─ TOTAL COSTS
+   Trading Fees:        $2940.87
+   Slippage:            $1273.73 (already in Gross P&L via fill prices)
+   Funding Paid:        $141.87
+   Network Fees:        $121.39
+   ═════════════════════
+   TOTAL FEES:          $3204.13 (incl. rebates)
+   + SLIPPAGE:          $1273.73
+   ═════════════════════
+   ALL-IN COSTS:        $4477.86
 
-EXIT REASONS (All Markets)
---------------------------------------------------
-  rsi_target_reached       2320 trades | Win: 92% | P&L: $173643.05
-  rsi_failure_exit         199 trades  | Win: 4%  | P&L: $-17067.80
-  rsi_hard_stop            10 trades   | Win: 0%  | P&L: $-9983.37
-  end_of_backtest          4 trades    | Win: 0%  | P&L: $-3222.03
+📊 MAKER/TAKER EXECUTION ANALYSIS
+──────────────────────────────────────────────────
+  ┌─ ENTRIES
+  │  Attempts:           2529
+  │  Maker Fills:        1759 (69.6%) → rebate received
+  │  Taker Fallbacks:    770 (30.4%) → paid taker fee
+  │
+  └─ EXITS
+     Total:             2528
+     Maker Fills:       1061 (42.0%) ← RSI targets
+     Taker Fallbacks:   1397 (55.3%) ← timeout
+     Forced Taker:      70 (2.8%) ← stops/liq/emergency
+  ─────────────────────────
+  Realized Mix:         55.8% maker / 44.2% taker
 
-POSITION SIZING STATS
+📈 COST ANALYSIS METRICS
+──────────────────────────────────────────────────
+  ┌─ VOLUME ANALYSIS
+  │  Open+Close:         1.44 bps
+  │  Expected from Mix:  1.41 bps (theoretical)
+  │  Fee Efficiency:     102% of expected
+  │
+  ├─ PER-TRADE METRICS
+  │  Avg Fee/Trade:      $1.27 (0.03% of size)
+  │  Avg Notional/Trade: $4051
+  │  Breakeven Return:   0.031% per trade
+  │
+  └─ PROFITABILITY IMPACT
+     Gross P&L:          $11204.90
+     Total Fees:         $3204.13
+     Net P&L:            $8000.77
+     Fee Impact:         28.6% of gross profits consumed by fees
+
+💡 FEE SCENARIO COMPARISON
+──────────────────────────────────────────────────
+  If 100% Taker:        $7168.86 (3.50 bps)
+  If 100% Maker:        $-512.06 (-0.25 bps) ← rebate
+  Actual (realized):    $2940.87 (1.44 bps)
+  Maker Savings:        $4227.99 saved vs pure taker
+
+🚪 EXIT REASONS (All Markets)
 --------------------------------------------------
-  Sizing Method:       fixed
-  Shared Capital:      $100000
-  Position Collateral: $25
+  ✅ rsi_target_reached        2276 trades | Win: 91% | P&L: $40566.66
+  ⛔ rsi_hard_stop              31 trades | Win: 0%  | P&L: $-16127.48
+  ❓ end_of_backtest             1 trades | Win: 0%  | P&L: $-32.90
+
+📐 POSITION SIZING STATS
+--------------------------------------------------
+  Sizing Method:       volatility-scaled
+  Size Percent:        40%
+  Shared Capital:      $1000
+  Initial Position:    $400 (40% collateral)
   Leverage:            1x
-  Max Positions:       shared multi-market cap
+  Initial Notional:    $400
+  Compounding:         ENABLED
+  Max Positions:       10 (across all markets)
+  Total Volume:        $10245329 (entry-side notional)
 
-CAPITAL VALIDATION
+💵 CAPITAL VALIDATION
 --------------------------------------------------
-  Capital Rule Hits:   NONE - all entries within available capital
-  Liquidations:        0
+  Peak Equity:         $12539.53
+  Min Equity:          $989.83
+  Capital Rule Hits:   ✅ NONE - all entries within available capital
+  Max Concurrent Pos:  7 (limit: 10)
+  Max Collateral Used: $12736.18 (initial: $1000)
+  Avg Concurrent Pos:  1.23 | Time in Trade: 67.5%
 
-TRADE STATISTICS
+📊 TRADE STATISTICS
 --------------------------------------------------
-  Winners:             2132 (84%) | Avg: +$82.87
-  Losers:              401 (16%)  | Avg: $-83.07
-  Profit Factor:       5.30
-  Expected Value:      $56.60/trade
-  Worst Trade:         -8.99%
-  CVaR 95:             -0.25%
+  Winners:             2087 (83%) | Avg: +$19.64
+  Losers:              442 (17%)  | Avg: $-72.41 | Worst: $-2218.08
+  Profit Factor:       1.28
+  Win/Loss Ratio:      0.27
+  Expected Value:      $3.55/trade (0.36%)
 
-ROBUSTNESS CHECK
+🔴 TOP 10 WORST TRADES
+--------------------------------------------------------------------------------------------------------------------------------------------
+    1 JTO       long   $-2218.08  -22.40%   rsi_hard_stop       notional=$10159  2026-01-31 14:00Z→2026-01-31 17:00Z
+    2 TAO       long   $-1976.83  -25.87%   rsi_hard_stop       notional=$9620   2026-02-04 05:00Z→2026-02-05 10:00Z
+    3 RENDER    short  $-1438.17  -20.12%   rsi_trailing_stop   notional=$7602   2026-02-06 13:00Z→2026-02-06 17:00Z
+    4 APT       short  $-1418.33  -15.17%   rsi_hard_stop       notional=$10267  2026-01-13 04:00Z→2026-01-13 16:00Z
+    5 WIF       short  $-1140.98  -15.10%   rsi_hard_stop       notional=$8309   2026-06-10 23:00Z→2026-06-11 08:00Z
+    6 LINK      long   $ -977.12  -12.40%   rsi_trailing_stop   notional=$11739  2026-01-22 11:00Z→2026-01-29 14:00Z
+    7 WIF       short  $ -948.89  -15.83%   rsi_hard_stop       notional=$8140   2026-02-23 05:00Z→2026-02-23 12:00Z
+    8 FARTCOIN  long   $ -863.51  -10.85%   rsi_hard_stop       notional=$9085   2026-02-22 12:00Z→2026-02-23 01:00Z
+    9 APT       short  $ -798.37  -15.03%   rsi_hard_stop       notional=$7428   2026-02-25 06:00Z→2026-02-25 14:00Z
+   10 HNT       long   $ -794.54  -10.14%   rsi_hard_stop       notional=$9037   2026-02-19 04:00Z→2026-02-19 13:00Z
+
+🟢 TOP 10 BEST TRADES
+--------------------------------------------------------------------------------------------------------------------------------------------
+    1 JTO       short  $  973.27   14.25%   rsi_target_reached  notional=$11628  2026-02-02 04:00Z→2026-02-02 05:00Z
+    2 JTO       long   $  539.19   11.17%   rsi_target_reached  notional=<redacted> 2026-06-01 00:00Z
+    3 JTO       short  $  524.09    7.45%   rsi_target_reached  notional=$9319   2026-02-16 12:00Z→2026-02-16 13:00Z
+    4 JTO       short  $  461.36    5.31%   rsi_target_reached  notional=$11324  2026-01-11 06:00Z→2026-01-11 06:00Z
+    5 JTO       short  $  434.68    7.14%   rsi_target_reached  notional=$8042   2026-02-08 11:00Z→2026-02-08 12:00Z
+    6 WIF       short  $  431.21    4.59%   rsi_target_reached  notional=$12160  2026-01-29 17:00Z→2026-01-29 17:00Z
+    7 JTO       short  $  419.00    7.98%   rsi_target_reached  notional=$6981   2026-05-22 21:00Z→2026-05-22 23:00Z
+    8 JTO       short  $  407.55    4.22%   rsi_target_reached  notional=$12490  2026-01-22 05:00Z→2026-01-22 06:00Z
+    9 JTO       short  $  398.26    4.50%   rsi_target_reached  notional=$11466  2026-01-18 19:00Z→2026-01-18 19:00Z
+   10 JUP       long   $  389.74    4.01%   rsi_target_reached  notional=$10661  2026-02-02 03:00Z→2026-02-02 04:00Z
+
+⏱️  TRADE DURATION DISTRIBUTION
 --------------------------------------------------
-  Bootstrap Runs:      1000
-  Sharpe CI:           9.56 to 13.15
-  Baseline Sharpe:     11.32
+  Min:         5.0m | Max: 12.7d
+  Avg:         4.2h | Median: 1.0h
+  P25:         30.0m | P75: 2.3h | P90: 7.2h
 
-Results saved to: <repo>/results/json/rsi-backtest-JTO-XRP-HYPE-SUI-LINK-JUP-HNT-APT-PAXG-DOGE-RENDER-TAO-DRIFT-FARTCOIN-PYTH-WIF-360d-<timestamp>.json
+  Duration Distribution Histogram:
+    <5m     ░░░░░░░░░░░░░░░░░░░░    0 (  0.0%)
+    5-15m   █████░░░░░░░░░░░░░░░  199 (  7.9%)
+    15-30m  █████████░░░░░░░░░░░  325 ( 12.9%)
+    30m-1h  ████████████████████  734 ( 29.0%)
+    1-2h    ████████████████░░░░  569 ( 22.5%)
+    2-4h    ████████░░░░░░░░░░░░  280 ( 11.1%)
+    4-8h    █████░░░░░░░░░░░░░░░  193 (  7.6%)
+    8-24h   ████░░░░░░░░░░░░░░░░  143 (  5.7%)
+    >24h    ██░░░░░░░░░░░░░░░░░░   86 (  3.4%)
 
-Backtest complete.
+📊 ROBUSTNESS CHECK
+--------------------------------------------------
+  Method: block bootstrap with BCa adjustment
+  Sharpe 95% CI: [1.253, 5.791]
+  MAR 95% CI:    [9.695, 217.729]
+  Baseline Sharpe: 3.129
+  Baseline MAR:    15.845
+  CI Width Reduction: Sharpe 1.0%, MAR 6.6%
+  ✅ Sharpe CI is entirely positive - statistically significant
+  ✅ MAR CI is entirely positive - statistically significant
 
-Sanitization note: this transcript removes local usernames, raw trade rows, private env values, RPC endpoints, wallet material, deployment IDs, and full generated JSON output.
+💡 Recommendations for Periodic Deep Analysis:
+  📊 Sensitivity Heatmaps: Enable with ROBUST_HEATMAP=1 for parameter robustness
+     → Shows wide plateaus vs needle peaks in parameter space
+     → Identifies stable parameter ranges
+  📊 Walk-Forward Analysis: Enable with ROBUST_WALK_FORWARD=1 for out-of-sample validation
+     → Tests strategy performance on unseen data (industry standard)
+     → Configure with WF_TRAIN_DAYS, WF_TEST_DAYS, WF_STEP_DAYS, WF_MODE
+  💡 Run these periodically (weekly/monthly) to validate parameter stability
+
+✅ Backtest complete!
+
+Results saved to: <repo>/results/json/rsi-backtest-JTO-XRP-HYPE-SUI-LINK-JUP-HNT-APT-DOGE-RENDER-TAO-DRIFT-FARTCOIN-PYTH-WIF-360d-<timestamp>.json
+
+Sanitization note: this transcript removes local usernames, shell prompts, raw wallet material, RPC endpoints, API keys, deployment IDs, raw trade rows, private env values, generated JSON output, and any local filesystem paths outside the repository placeholder.

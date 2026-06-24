@@ -4,12 +4,26 @@ This repository contains a sanitized production-source subset of a live Solana-b
 
 The engine uses a DeFi-native execution model: trades are routed through Solana-based venues from a wallet-controlled setup, so operation does not require a centralized exchange account or exchange custody. This keeps access permissionless, supports multiple venues from one runtime, and makes wallet, RPC, venue, and risk configuration the primary deployment inputs. Current showcase paths include Solana DeFi venues such as Drift and Jupiter, with an adapter-based structure that can extend to additional DeFi AMM-style venues such as PancakeSwap where compatible adapters are added.
 
+## Reviewer Context
+
+This showcase is designed for a quick hiring or founder review. It demonstrates end-to-end ownership of a production-style financial trading engine: product framing, DeFi infrastructure, strategy orchestration, risk controls, secure operations, monitoring, and research validation.
+
+- **Business signal:** Turns wallet-based DeFi market access into an operated trading workflow with controls, dashboards, alerts, and repeatable research outputs.
+- **Technical signal:** Includes real production modules for allocation, risk, venue routing, low-level Solana execution, encrypted secrets, tests, and backtests rather than a toy demo.
+- **Product signal:** Treats trading as an operational system with user controls, auditability, staged rollout modes, and failure handling.
+- **Risk signal:** Backtest snapshots include drawdown, fees, slippage, maker/taker mix, robustness checks, and disqualification logic; they are validation artifacts, not performance marketing.
+
 ## Review First
+
+- **5-minute scan:** read this README, view the dashboard snapshot, and skim the backtest visual.
+- **15-minute review:** open the PRD, ERD, and diagrams to understand product scope and architecture.
+- **Technical review:** inspect [utils/market-allocator.js](./utils/market-allocator.js), [risk-manager.js](./risk-manager.js), [src/execution/venue-aware-trade-executor.js](./src/execution/venue-aware-trade-executor.js), [src/execution/perps-raw-client.js](./src/execution/perps-raw-client.js), [tools/secrets-manager.js](./tools/secrets-manager.js), and [tests/](./tests).
 
 - [docs/PRD.md](./docs/PRD.md): product requirements, capabilities, user flows, risk controls, and success metrics.
 - [docs/ERD.md](./docs/ERD.md): engineering requirements, network/application boundaries, module responsibilities, and acceptance criteria.
 - [diagrams/DIAGRAMS.md](./diagrams/DIAGRAMS.md): GitHub-rendered system flow diagrams for trading, validation, risk, routing, and multi-market execution.
 - [snapshots/dashboard/trading-engine-dashboard-snapshot.png](./snapshots/dashboard/trading-engine-dashboard-snapshot.png): sanitized static dashboard screenshot for a quick visual review.
+- [snapshots/backtests/rsi-reversion-backtest-terminal-snapshot.svg](./snapshots/backtests/rsi-reversion-backtest-terminal-snapshot.svg): visual terminal-style snapshot of a multi-market RSI reversion backtest.
 - [snapshots/backtests/rsi-reversion-terminal-output.txt](./snapshots/backtests/rsi-reversion-terminal-output.txt): sanitized terminal output excerpt from a multi-market RSI reversion backtest.
 - [snapshots/logs/](./snapshots/logs): sanitized startup and runtime-loop log excerpts.
 - [docs/SANITIZATION.md](./docs/SANITIZATION.md): what was intentionally excluded from this public showcase.
@@ -55,7 +69,13 @@ flowchart LR
 
 ![Sanitized trading engine dashboard snapshot](./snapshots/dashboard/trading-engine-dashboard-snapshot.png)
 
-The `snapshots/` folder includes static review artifacts: a dashboard screenshot, the HTML used to render it, sanitized startup/runtime logs, and a terminal-style backtest output excerpt. These are safe public examples with wallet material, RPC URLs, API keys, deployment IDs, raw databases, and full trade logs removed.
+## Backtest Output Snapshot
+
+![Sanitized RSI reversion backtest terminal snapshot](./snapshots/backtests/rsi-reversion-backtest-terminal-snapshot.svg)
+
+The `snapshots/` folder includes static review artifacts: a dashboard screenshot, the HTML used to render it, a visual terminal-style backtest snapshot, the full sanitized terminal backtest excerpt, and sanitized startup/runtime logs. These are safe public examples with wallet material, RPC URLs, API keys, deployment IDs, raw databases, raw trade rows, and full generated outputs removed.
+
+The backtest output is included to show the research workflow and risk-review depth: no-lookahead timing notes, shared-capital simulation, allocator diagnostics, cost model, maker/taker analysis, drawdown limits, worst/best trade inspection, duration distribution, and robustness checks.
 
 ## Telegram Controls
 
@@ -174,7 +194,7 @@ flowchart TD
 
 ## Public Showcase Scope
 
-This is a code-reviewable snapshot, not a turnkey deployment. Live operation is wallet-based and does not require a centralized exchange account, but it still requires private environment configuration, RPC endpoints, funded wallet material, and operational secrets that are deliberately not included.
+This is a code-reviewable snapshot, not a turnkey deployment or an investment-performance claim. Live operation is wallet-based and does not require a centralized exchange account, but it still requires private environment configuration, RPC endpoints, funded wallet material, and operational secrets that are deliberately not included.
 
 ## License
 

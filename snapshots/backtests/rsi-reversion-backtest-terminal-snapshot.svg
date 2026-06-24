@@ -1,0 +1,169 @@
+<svg width="1280" height="1180" viewBox="0 0 1280 1180" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Sanitized RSI Reversion Backtest Terminal Snapshot</title>
+  <desc id="desc">A terminal-style visual snapshot of a sanitized multi-market RSI reversion backtest with allocator, cost, execution, and robustness diagnostics.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#071111" />
+      <stop offset="45%" stop-color="#0d1d1c" />
+      <stop offset="100%" stop-color="#17140e" />
+    </linearGradient>
+    <radialGradient id="glowA" cx="20%" cy="10%" r="70%">
+      <stop offset="0%" stop-color="#3dd6b5" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#3dd6b5" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowB" cx="90%" cy="82%" r="62%">
+      <stop offset="0%" stop-color="#f2b85b" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#f2b85b" stop-opacity="0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#000000" flood-opacity="0.48" />
+    </filter>
+    <style>
+      .mono {
+        font-family: "Aptos Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+      }
+      .sans {
+        font-family: "Aptos", "Segoe UI", sans-serif;
+      }
+      .muted {
+        fill: #78918d;
+      }
+      .text {
+        fill: #d8e7df;
+      }
+      .green {
+        fill: #5ff0c2;
+      }
+      .amber {
+        fill: #f4c86a;
+      }
+      .red {
+        fill: #ff8e78;
+      }
+      .blue {
+        fill: #8bc7ff;
+      }
+      .line {
+        stroke: #1f3b37;
+        stroke-width: 1;
+      }
+      .panel {
+        fill: #0b1716;
+        stroke: #1f3b37;
+        stroke-width: 1.2;
+      }
+      .card {
+        fill: #101f1d;
+        stroke: #274743;
+        stroke-width: 1;
+      }
+    </style>
+  </defs>
+
+  <rect width="1280" height="1180" fill="url(#bg)" />
+  <rect width="1280" height="1180" fill="url(#glowA)" />
+  <rect width="1280" height="1180" fill="url(#glowB)" />
+
+  <g filter="url(#shadow)">
+    <rect x="62" y="54" width="1156" height="1072" rx="24" fill="#081211" stroke="#24443f" stroke-width="1.5" />
+    <rect x="62" y="54" width="1156" height="58" rx="24" fill="#10201e" />
+    <rect x="62" y="92" width="1156" height="20" fill="#10201e" />
+  </g>
+
+  <circle cx="96" cy="84" r="7" fill="#ff6b5f" />
+  <circle cx="120" cy="84" r="7" fill="#f5c85e" />
+  <circle cx="144" cy="84" r="7" fill="#59d68f" />
+  <text x="184" y="89" class="sans muted" font-size="15">sanitized terminal snapshot / RSI reversion research run</text>
+  <text x="1012" y="89" class="mono muted" font-size="14">snapshots/backtests</text>
+
+  <g transform="translate(92 142)">
+    <text x="0" y="0" class="mono green" font-size="17">$</text>
+    <text x="24" y="0" class="mono text" font-size="17">ENV_FILE=.env.rsi-reversion node --max-old-space-size=8192 scripts/backtest/backtest-rsi-reversion.js \</text>
+    <text x="24" y="29" class="mono text" font-size="17">  --days=360 --interval=5m --symbols=JTO,XRP,HYPE,SUI,LINK,JUP,HNT,APT,DOGE,RENDER,TAO,DRIFT,FARTCOIN,PYTH,WIF</text>
+  </g>
+
+  <line x1="92" y1="214" x2="1188" y2="214" class="line" />
+
+  <g transform="translate(92 250)">
+    <text x="0" y="0" class="mono blue" font-size="18">Multi-Market Shared Capital Simulation</text>
+    <text x="0" y="31" class="mono muted" font-size="16">Timeline: 103680 unified timestamps | Tick simulation: 20 ticks/candle | Entry: previous-bar RSI at bar open, no look-ahead</text>
+  </g>
+
+  <g transform="translate(92 324)">
+    <rect class="card" x="0" y="0" width="184" height="104" rx="16" />
+    <text x="20" y="32" class="sans muted" font-size="13">TOTAL TRADES</text>
+    <text x="20" y="74" class="mono text" font-size="34">2529</text>
+
+    <rect class="card" x="204" y="0" width="184" height="104" rx="16" />
+    <text x="224" y="32" class="sans muted" font-size="13">WIN RATE</text>
+    <text x="224" y="74" class="mono green" font-size="34">82.5%</text>
+
+    <rect class="card" x="408" y="0" width="224" height="104" rx="16" />
+    <text x="428" y="32" class="sans muted" font-size="13">FINAL EQUITY</text>
+    <text x="428" y="74" class="mono green" font-size="34">$9,002</text>
+
+    <rect class="card" x="652" y="0" width="184" height="104" rx="16" />
+    <text x="672" y="32" class="sans muted" font-size="13">TOTAL RETURN</text>
+    <text x="672" y="74" class="mono green" font-size="34">+800%</text>
+
+    <rect class="card" x="856" y="0" width="220" height="104" rx="16" />
+    <text x="876" y="32" class="sans muted" font-size="13">RISK RESULT</text>
+    <text x="876" y="74" class="mono red" font-size="28">DISQUALIFIED</text>
+  </g>
+
+  <g transform="translate(92 470)">
+    <rect class="panel" x="0" y="0" width="540" height="238" rx="18" />
+    <text x="24" y="36" class="mono amber" font-size="18">PORTFOLIO SUMMARY</text>
+    <line x1="24" y1="55" x2="516" y2="55" class="line" />
+    <text class="mono text" font-size="16">
+      <tspan x="24" y="92">Initial Capital:   $1,000 shared</tspan>
+      <tspan x="24" y="120">Final Equity:      $9,002.34</tspan>
+      <tspan x="24" y="148">Expectancy:        $3.55/trade</tspan>
+      <tspan x="24" y="176">PnL Skewness:      -9.19 negative tail</tspan>
+      <tspan x="24" y="204">Max Drawdown:      50.50% &gt; 20% guardrail</tspan>
+    </text>
+
+    <rect class="panel" x="572" y="0" width="524" height="238" rx="18" />
+    <text x="596" y="36" class="mono amber" font-size="18">ALLOCATOR STATS</text>
+    <line x1="596" y1="55" x2="1072" y2="55" class="line" />
+    <text class="mono text" font-size="16">
+      <tspan x="596" y="92">Signals Generated:   2638</tspan>
+      <tspan x="596" y="120">Signals Accepted:    2529 (95.9%)</tspan>
+      <tspan x="596" y="148">Concurrent Ticks:    113</tspan>
+      <tspan x="596" y="176">Max Concurrent:      4 signals at once</tspan>
+      <tspan x="596" y="204">Per-market decisions recorded</tspan>
+    </text>
+  </g>
+
+  <g transform="translate(92 742)">
+    <rect class="panel" x="0" y="0" width="540" height="258" rx="18" />
+    <text x="24" y="36" class="mono amber" font-size="18">COST BREAKDOWN</text>
+    <line x1="24" y1="55" x2="516" y2="55" class="line" />
+    <text class="mono text" font-size="16">
+      <tspan x="24" y="92">Trading Fees:       $2,940.87</tspan>
+      <tspan x="24" y="120">Slippage:           $1,273.73</tspan>
+      <tspan x="24" y="148">Funding Paid:       $141.87</tspan>
+      <tspan x="24" y="176">Network Fees:       $121.39</tspan>
+      <tspan x="24" y="204">All-in Costs:       $4,477.86</tspan>
+      <tspan x="24" y="232">Fee Impact:         28.6% of gross P&amp;L</tspan>
+    </text>
+
+    <rect class="panel" x="572" y="0" width="524" height="258" rx="18" />
+    <text x="596" y="36" class="mono amber" font-size="18">MAKER/TAKER EXECUTION</text>
+    <line x1="596" y1="55" x2="1072" y2="55" class="line" />
+    <text class="mono text" font-size="16">
+      <tspan x="596" y="92">Entry Attempts:     2529</tspan>
+      <tspan x="596" y="120">Maker Entries:      1759 (69.6%)</tspan>
+      <tspan x="596" y="148">Taker Fallbacks:    770 (30.4%)</tspan>
+      <tspan x="596" y="176">Maker Exits:        1061 (42.0%)</tspan>
+      <tspan x="596" y="204">Forced Taker:       70 stops/liq/emergency</tspan>
+      <tspan x="596" y="232">Maker Savings:      $4,227.99 vs pure taker</tspan>
+    </text>
+  </g>
+
+  <g transform="translate(92 1034)">
+    <text x="0" y="0" class="mono blue" font-size="15">Robustness: block bootstrap with BCa adjustment | Sharpe CI [1.253, 5.791] | MAR CI [9.695, 217.729]</text>
+    <text x="0" y="28" class="mono green" font-size="15">Statistical checks pass, while risk guardrails correctly flag the configuration for drawdown.</text>
+    <text x="0" y="64" class="mono muted" font-size="14">Sanitized: shell prompt, local paths, wallet material, RPC URLs, API keys, deployment IDs, raw rows, and full JSON output removed.</text>
+  </g>
+</svg>
