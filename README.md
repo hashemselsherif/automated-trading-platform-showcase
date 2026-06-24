@@ -6,8 +6,6 @@ The engine uses a DeFi-native execution model: trades are routed through Solana-
 
 ## Reviewer Context
 
-This showcase is designed for a quick hiring or founder review. It demonstrates end-to-end ownership of a production-style financial trading engine: product framing, DeFi infrastructure, strategy orchestration, risk controls, secure operations, monitoring, and research validation.
-
 - **Business signal:** Turns wallet-based DeFi market access into an operated trading workflow with controls, dashboards, alerts, and repeatable research outputs.
 - **Technical signal:** Includes real production modules for allocation, risk, venue routing, low-level Solana execution, encrypted secrets, tests, and backtests rather than a toy demo.
 - **Product signal:** Treats trading as an operational system with user controls, auditability, staged rollout modes, and failure handling.
