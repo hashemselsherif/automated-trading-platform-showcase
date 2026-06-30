@@ -483,7 +483,7 @@ flowchart TB
 
 ### 16. Operator Control Surface
 
-Operators supervise and intervene without shell access. Control surfaces share authentication, rate limiting, and payload validation, then drive runtime actions — pause/resume, close position(s), and read-only inspection — while live state streams back to the surfaces. The full Telegram command tree is documented in the [README](../README.md).
+Operators supervise and intervene without shell access. Control surfaces share authentication, rate limiting, and payload validation, then drive runtime actions — pause/resume, close position(s), and read-only inspection — while live state streams back to the surfaces. The full Telegram command tree is shown in the next diagram.
 
 ```mermaid
 flowchart TB
@@ -512,4 +512,55 @@ flowchart TB
   Inspect --> Store["Trade store and diagnostics"]
   Runtime --> Surfaces
   Store --> Surfaces
+```
+
+### 17. Telegram Control Tree
+
+The Telegram surface is one operator control channel. Every command passes a shared auth, rate-limit, and callback-sanitization layer, then branches into status/info, wallet-following review, engine controls, manual position review, position-close routing, and guarded-execution approval. Manual positions are routed to a wallet-signed CLI or UI rather than executed in-chat.
+
+```mermaid
+flowchart TD
+  T["Telegram control layer"] --> A["Auth, rate limit, callback sanitization"]
+
+  A --> S["Status and info"]
+  S --> S1["/start"]
+  S --> S2["/help"]
+  S --> S3["/ping"]
+  S --> S4["/status"]
+  S --> S5["/markets"]
+  S --> S6["/positions"]
+  S --> S7["/performance"]
+  S --> S8["/portfolio"]
+
+  A --> W["Wallet-following review"]
+  W --> W1["/leaders"]
+  W --> W2["/leaders SYMBOL"]
+  W --> W3["/leaders core"]
+  W --> W4["/leaders watch"]
+  W --> W5["/followhealth"]
+
+  A --> C["Engine controls"]
+  C --> C1["/pause"]
+  C --> C2["/resume"]
+  C --> C3["/closeall"]
+  C3 --> C4["Confirm close all positions"]
+
+  A --> M["Manual position review"]
+  M --> M1["/manual"]
+  M --> M2["/open"]
+  M2 --> M3["Select market"]
+  M3 --> M4["Select long or short"]
+  M4 --> M5["Select collateral"]
+  M5 --> M6["Select leverage"]
+  M6 --> M7["Confirm manual trade parameters"]
+
+  A --> P["Position close flow"]
+  P --> P1["/close"]
+  P1 --> P2["Select open position"]
+  P2 --> P3["Close automated position"]
+  P2 --> P4["Route manual position to wallet-signed CLI or UI"]
+
+  A --> R["Guarded execution approval"]
+  R --> R1["Approve trade"]
+  R --> R2["Reject trade"]
 ```
