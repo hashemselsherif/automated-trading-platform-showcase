@@ -19,7 +19,7 @@ The engine uses a DeFi-native execution model: trades are routed through Solana-
 
 - [docs/PRD.md](./docs/PRD.md): product requirements, capabilities, user flows, risk controls, and success metrics.
 - [docs/ERD.md](./docs/ERD.md): engineering requirements, network/application boundaries, module responsibilities, and acceptance criteria.
-- [diagrams/DIAGRAMS.md](./diagrams/DIAGRAMS.md): GitHub-rendered system flow diagrams for trading, validation, risk, routing, and multi-market execution.
+- [diagrams/DIAGRAMS.md](./diagrams/DIAGRAMS.md): GitHub-rendered diagram hub and single source of truth — system context, architecture, orchestration, allocation, risk, validation, venue-aware execution, execution modes, copy-trading, data model, security, and operator controls.
 - [snapshots/dashboard/trading-engine-dashboard-snapshot.png](./snapshots/dashboard/trading-engine-dashboard-snapshot.png): sanitized static dashboard screenshot for a quick visual review.
 - [snapshots/backtests/rsi-reversion-backtest-terminal-snapshot.svg](./snapshots/backtests/rsi-reversion-backtest-terminal-snapshot.svg): visual terminal-style snapshot of a multi-market RSI reversion backtest.
 - [snapshots/backtests/rsi-reversion-terminal-output.txt](./snapshots/backtests/rsi-reversion-terminal-output.txt): sanitized terminal output excerpt from a multi-market RSI reversion backtest.
