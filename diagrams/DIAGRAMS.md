@@ -158,7 +158,7 @@ The per-cycle sequence across the major subsystems, including validation, persis
 
 ```mermaid
 sequenceDiagram
-  participant Loop as Trading loop (bot.js)
+  participant Bot as Trading loop bot.js
   participant Data as Price and market data
   participant Strat as Strategy factory
   participant Alloc as Allocator
@@ -169,24 +169,24 @@ sequenceDiagram
   participant Ops as Dashboards and alerts
 
   loop Every cycle
-    Loop->>Data: Refresh prices and indicators
-    Data-->>Loop: Normalized market state
-    Loop->>Strat: Evaluate enabled strategies
-    Strat-->>Loop: Signals by market
-    Loop->>Loop: Check open positions and exits
-    Loop->>Alloc: Rank opportunities
-    Alloc-->>Loop: Selected candidates
+    Bot->>Data: Refresh prices and indicators
+    Data-->>Bot: Normalized market state
+    Bot->>Strat: Evaluate enabled strategies
+    Strat-->>Bot: Signals by market
+    Bot->>Bot: Check open positions and exits
+    Bot->>Alloc: Rank opportunities
+    Alloc-->>Bot: Selected candidates
     loop For each selected trade
-      Loop->>Risk: Size and check exposure
-      Risk-->>Loop: Approved sizing or rejection
+      Bot->>Risk: Size and check exposure
+      Risk-->>Bot: Approved sizing or rejection
       alt Approved
-        Loop->>Val: Slippage, funding, collateral, duplicate checks
-        Val-->>Loop: Execution approval
-        Loop->>Exec: Open or close request
+        Bot->>Val: Slippage, funding, collateral, duplicate checks
+        Val-->>Bot: Execution approval
+        Bot->>Exec: Open or close request
         Exec->>Store: Persist lifecycle result
         Store-->>Ops: Stream status and alerts
       else Rejected
-        Loop->>Store: Record gate and allocator diagnostics
+        Bot->>Store: Record gate and allocator diagnostics
       end
     end
   end
